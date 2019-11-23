@@ -1,2 +1,5 @@
 *~
 *.pdf
+*.swp
+*.rda
+*.out

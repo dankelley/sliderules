@@ -6,6 +6,13 @@ output:
   pdf_document:
     fig_caption: yes
 ---
+```{r echo=FALSE}
+load("00.rda")
+load("01.rda")
+load("02.rda")
+```
+
+# Concept
 
 In a linear equation of state, assuming constant pressure $p$, density is given
 by
@@ -34,7 +41,7 @@ of state would be written
 where $f$ and $g$ are functions that could be determined to fit the actual
 equation of state over a reasonable application range.
 
-**Apparatus**
+# Apparatus
 
 ![Sketch of slide rule.](sigmat_idea.png) The diagram above illustrates the
 idea for a linear slide rule^[A circular slide rule would be more interesting
@@ -44,7 +51,7 @@ idea.].  There are two sliding scales. The lower one has $\sigma_t$ on the
 bottom side and $S$ on the top side.  The upper one has $T$ on the lower side.
 
 
-**Usage**
+# Usage
 
 Given $S$ and $T$, density $\rho$ is calculated as follows.
 
@@ -58,5 +65,37 @@ Given $S$ and $T$, density $\rho$ is calculated as follows.
 
 The device can also be used in other ways, e.g. infer $T$, given $S$ and
 $\rho$.
+
+# Working notes
+
+```{r echo=FALSE}
+options(digits=5)
+```
+
+## First-order model
+Linear least-squares regression analysis (see `01.R`) on an `r n` by `r n`
+grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
+\begin{equation}
+\label{e3}
+\sigma_\theta = `r C01[1]` +`r C01[2]`(S-S_0) - `r -C01[3]`(T-T_0)
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
+misfit of this model is `r round(RMS(res01),3)` kg/m$^3$, which is equivalent
+to $`r round(100*RMS(res01)/sigtheRange01,1)`$ percent of the $\sigma_\theta$
+range.
+
+## Second-order model
+
+
+Second-order polynomial least-squares regression analysis (see `02.R`) on an `r n` by `r n`
+grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
+\begin{equation}
+\label{e4}
+\sigma_\theta = `r C02[1]` +`r C02[2]`(S-S_0) + `r C02[3]`(S-S_0)^2-`r -C02[4]`(T-T_0)-`r -C02[5]`(T-T_0)^2
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
+misfit of this model is `r round(RMS(res02),3)` kg/m$^3$, which is equivalent
+to $`r round(100*RMS(res02)/sigtheRange02,1)`$ percent of the $\sigma_\theta$
+range.
 
 
