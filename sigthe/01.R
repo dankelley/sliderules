@@ -13,6 +13,5 @@ label <- sprintf("sigthe=%.3f*+%.4g(S-%.1f)-%.4g(T-%..1f) at %.0f dbar (res. %.3
                  C01[1], C01[2], S0, -C01[3], T0, p, RMS(res01))
 mtext(label, line=0, cex=0.8)
 if (!interactive()) dev.off()
-sigtheRange01 <- diff(range(sigthev))
-save(m01, C01, res01, sigtheRange01, file="01.rda")
+save(m01, C01, res01, file="01.rda")
 

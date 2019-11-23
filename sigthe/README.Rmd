@@ -81,7 +81,7 @@ grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
 \end{equation}
 with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
 misfit of this model is `r round(RMS(res01),3)` kg/m$^3$, which is equivalent
-to $`r round(100*RMS(res01)/sigtheRange01,1)`$ percent of the $\sigma_\theta$
+to $`r round(100*RMS(res01)/sigtheSpan,2)`$ percent of the $\sigma_\theta$
 range.
 
 ## Second-order model
@@ -95,13 +95,5 @@ grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
 \end{equation}
 with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
 misfit of this model is `r round(RMS(res02),3)` kg/m$^3$, which is equivalent
-to $`r round(100*RMS(res02)/sigtheRange02,1)`$ percent of the $\sigma_\theta$
+to $`r round(100*RMS(res02)/sigtheSpan,2)`$ percent of the $\sigma_\theta$
 range.
-
-```{r}
-Sv <- seq(S0, Smax, length.out=n)
-Tv <- seq(T0, Tmax, length.out=n)
-plot(Sv,Tv,type='n',xlab='',ylab='',axes=FALSE)
-box()
-axis(side=1, at=pretty(Sv,n=50), labels=pretty(Sv,n=50))
-```

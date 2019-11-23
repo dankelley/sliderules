@@ -15,6 +15,5 @@ label <- sprintf("sigthe=%.3f+%.4g(S-%.1f)+%.4g(S-%.1f)^2-%.4g(T-%.1f)-%.4g(T-%.
                  C02[1], C02["Sv"], S0, C02["Sv2"], S0, C02["Tv"], T0, C02["Tv2"], T0, p, RMS(res02))
 mtext(label, line=0, cex=0.8)
 if (!interactive()) dev.off()
-sigtheRange02 <- diff(range(sigthev))
-save(S0, T0, Smax, Tmax, p, n, m02, C02, res02, sigtheRange02, file="02.rda")
+save(S0, T0, Smax, Tmax, p, n, m02, C02, res02, file="02.rda")
 

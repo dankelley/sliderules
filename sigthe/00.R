@@ -14,6 +14,7 @@ for (iS in 1:n) {
         sigthe[iS, iT] <- swSigmaTheta(S[iS], T[iT], p)
     }
 }
-sigtheRange <- diff(range(sigthe))
-save(S0, T0, Smax, Tmax, p, n, sigtheRange, RMS, file="00.rda")
+sigtheRange <- range(sigthe)
+sigtheSpan <- diff(sigtheRange)
+save(S0, T0, Smax, Tmax, p, n, sigtheRange, sigtheSpan, RMS, file="00.rda")
 
