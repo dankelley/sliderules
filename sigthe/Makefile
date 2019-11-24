@@ -1,4 +1,4 @@
-all:00.out 01.out 02.out sr1.out README.pdf
+all:00.out 01.out 02.out 03.out sr1.out README.pdf
 %.out: %.R
 	Rscript $< > $@
 %.pdf: %.Rmd

@@ -10,6 +10,7 @@ output:
 load("00.rda")
 load("01.rda")
 load("02.rda")
+load("03.rda")
 ```
 
 # Concept
@@ -72,7 +73,8 @@ $\rho$.
 options(digits=5)
 ```
 
-## First-order model
+## First-order linear model
+
 Linear least-squares regression analysis (see `01.R`) on an `r n` by `r n`
 grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
 \begin{equation}
@@ -82,10 +84,9 @@ grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
 with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
 misfit of this model is `r round(RMS(res01),3)` kg/m$^3$, which is equivalent
 to $`r round(100*RMS(res01)/sigtheSpan,2)`$ percent of the $\sigma_\theta$
-range.
+range. The maximum absolute misfit is $`r max(abs(res01))`$kg/m$^3$.
 
-## Second-order model
-
+## Second-order linear model
 
 Second-order polynomial least-squares regression analysis (see `02.R`) on an `r n` by `r n`
 grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
@@ -96,4 +97,19 @@ grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
 with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
 misfit of this model is `r round(RMS(res02),3)` kg/m$^3$, which is equivalent
 to $`r round(100*RMS(res02)/sigtheSpan,2)`$ percent of the $\sigma_\theta$
-range.
+range. The maximum absolute misfit is $`r max(abs(res02))`$kg/m$^3$.
+
+## Second-order nonlinear model
+
+Second-order polynomial least-squares regression analysis (see `03.R`) on an `r n` by `r n`
+grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
+\begin{equation}
+\label{e5}
+\sigma_\theta = `r C03[1]` +`r C03[2]`(S-S_0) + `r C03[3]`(S-S_0)^2-`r -C03[4]`(T-T_0)-`r -C03[5]`(T-T_0)^2 -`r -C03[6]`(S-S_0)(T-T_0)
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=`r p`$dbar.  The RMS
+misfit of this model is `r round(RMS(res03),3)` kg/m$^3$, which is equivalent
+to $`r round(100*RMS(res03)/sigtheSpan,2)`$ percent of the $\sigma_\theta$
+range. The maximum absolute misfit is $`r max(abs(res03))`$kg/m$^3$.
+
+

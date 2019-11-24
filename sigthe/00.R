@@ -1,6 +1,6 @@
 library(oce)
 RMS <- function(x) sqrt(mean(x^2))
-n <- 100
+n <- 20
 S0 <- 30
 Smax <- 40
 T0 <- 5
