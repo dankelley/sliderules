@@ -67,7 +67,7 @@ TSmall <- seq(T0, Tmax, by=0.5)
 fancyAxis(TSmall, TMiddle, TBig, func=Tfunc, side=1, y=1, name=expression(T*degree*"C"))
 oldxpd <- par("xpd")
 par(xpd=NA)
-text(Tfunc(max(TBig)+4), 1.125, expression("In-situ Temperature ["*degree*"C]"), pos=1, cex=1)#cexName)
+text(Tfunc(max(TBig)+4), 1.130, expression("In-situ Temperature ["*degree*"C]"), pos=1, cex=1)#cexName)
 #text(Tfunc(max(TBig)-1), 1.125, expression("T ["*degree*"C]"), pos=1, cex=cexName)
 #text(Tfunc(max(TBig)-1), 1.125, expression("T"), pos=1, cex=cexName)
 par(xpd=oldxpd)
@@ -81,14 +81,20 @@ fancyAxis(sigtheSmall, sigtheMiddle, sigtheBig, side=1, y=0,
           name=expression(sigma[theta]*kg/m^3))
 text(min(sigtheSmall)+0.49, 0.14, expression(sigma[theta]*" ["*kg/m^3*"]"), pos=1, cex=cexName)
 
-D0 <- 0.20
-DD <- 0.15
-text(sigthe0, D0+2*DD, "Usage: place T=0 at S, slide pointer to T, read rough sigma-theta, add correction from graph.", pos=4)
-text(sigthe0, D0+DD, sprintf("Error: %.3f kg/m^3 (rms), %.3f kg/m^3 (max) from 0 to 500dbar.",
-                            RMS(residuals(m)), max(residuals(m))),
-     pos=4)
-text(sigthe0, D0, sprintf("E.G. %.2f kg/m^3 at S=%.0f, T=%.0fC",
-                          swSigmaTheta(35, 0, 0), 35, 20, 0), pos=4)
+y0 <- 0.25
+dy <- 0.08
+x <- sigthe0 - 0.1
+cexText <- 0.935
+text(x, y0+2*dy, expression("Usage: place T=0 at S, slide pointer to T, read approximate "*sigma[theta]*" below, then add correction from graph."), pos=4, cex=cexText)
+##text(sigthe0, D0, sprintf("E.G. %.2f kg/m^3 at S=%.0f, T=%.0fC", swSigmaTheta(35, 0, 0), 35, 20, 0), pos=4)
+EGS <- 32
+EGT <- 5
+EGp <- 0
+EGsigma <- sprintf("%.2f", round(swSigmaTheta(EGS, EGT, EGp), 3))
+text(x, y0+dy, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
+ERRrms <- round(RMS(residuals(m)), 2)
+ERRmax <- round(max(residuals(m)), 2)
+text(x, y0, bquote("Error: "*.(ERRrms)*kg/m^3*" (rms), "*.(ERRmax)*kg/m^3*" (max) from 0 to 500dbar."), pos=4, cex=cexText)
 
 omar <- par("mar")
 par(new=TRUE)
