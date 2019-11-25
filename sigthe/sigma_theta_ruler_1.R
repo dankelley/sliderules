@@ -13,7 +13,7 @@ Tfunc <- function(T)
     Sfunc(Smax) + C["TT"]*(T-T0) + C["TT2"]*(T-T0)^2
 }
 
-if (!interactive()) pdf("sr1.pdf", width=7, height=2, pointsize=8)
+if (!interactive()) pdf("sigma_theta_ruler_1.pdf", width=7, height=2, pointsize=8)
 par(mar=c(if (debug > 0) 2 else 1, if (debug > 0) 2 else 1, 2, 1))
 sigthe0 <- floor(swSigmaTheta(min(G$S), max(G$T), 100))
 sigthemax <- ceiling(swSigmaTheta(max(G$S), min(G$T), 100))
