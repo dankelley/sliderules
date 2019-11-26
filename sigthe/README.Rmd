@@ -140,10 +140,14 @@ and $`r p0`<p<`r pmax`$ yields
 \label{e6}
 \begin{split}
 \sigma_\theta =& `r C['(Intercept)']` +`r C['SS']`(S-S_0) + `r C['SS2']`(S-S_0)^2\\
-&-`r -C['TT']`(T-T_0)-`r -C['TT2']`(T-T_0)^2 -`r -C['SSTT']`(S-S_*)(T-T_*)+`r C['p']`*p
+&-`r -C['TT']`(T-T_0)-`r -C['TT2']`(T-T_0)^2 -`r -C['SSTT']`(S-S_*)(T-T_*)
 \end{split}
 \end{equation}
 with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, $S_*=`r Smid`$, $T_*=`r Tmid`^\circ$C.
 The RMS misfit is `r round(RMS(res),3)` kg/m$^3$, and the maximum absolute
-misfit is $`r max(abs(res))`$kg/m$^3$.
+misfit is $`r max(abs(res))`$kg/m$^3$. (I also tried with a linear pressure
+term but the coefficient was `r 2.068e-5`, which is only `r 500*2.068e-5` at
+500dbar, so I did not judge this correction important enough (for coastal work)
+to justify adding a second correction graph.
+
 
