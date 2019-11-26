@@ -14,7 +14,7 @@ Tfunc <- function(T)
 }
 
 if (!interactive()) pdf("sigma_theta_circular_1.pdf", width=7, height=7, pointsize=8)
-nseg <- 64
+nseg <- 512 # segments in circle (128 is enough)
 xc <- 0
 yc <- 0
 R <- list(sigthe=0.65, S=0.8, T=0.81)
