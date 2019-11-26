@@ -9,7 +9,7 @@ SS2 <- SS^2
 ## SS12 <- sqrt(SS) # p=0.788
 TT2 <- TT^2
 SSTT <- (S - Smid) * (T - Tmid)
-## SSTT2 <- SSTT^2 # p=0.767
+## SSTT2 <- SSTT^2 # p 0.842
 m <- lm(sigthe ~ SS + TT + SS2 + TT2 + SSTT + p)
 summary(m)
 save(m, file="04.rda")
