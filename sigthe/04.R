@@ -10,7 +10,12 @@ SS2 <- SS^2
 TT2 <- TT^2
 SSTT <- (S - Smid) * (T - Tmid)
 ## SSTT2 <- SSTT^2 # p 0.842
-m <- lm(sigthe ~ SS + TT + SS2 + TT2 + SSTT + p)
+## Next gives a signficant pressure term, but the coefficient
+## is 2.068e-5, which is 0.01 at 500dbar, so I dropped it,
+## in the interest of simplicity.
+mwithp <- lm(sigthe ~ SS + TT + SS2 + TT2 + SSTT + p)
+summary(mwithp)
+m <- lm(sigthe ~ SS + TT + SS2 + TT2 + SSTT) # + p)
 summary(m)
 save(m, file="04.rda")
 
