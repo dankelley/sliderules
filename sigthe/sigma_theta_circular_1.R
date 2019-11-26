@@ -1,5 +1,5 @@
 library(oce)
-debug <- 1
+debug <- 0
 cexName <- 0.9
 load("00.rda")
 load("04.rda")
@@ -107,32 +107,44 @@ dy <- 0.08
 x <- sigthe0 - 0.1
 ##cexText <- 0.935
 cexText <- 0.95
-text(-0.26, 0.42, expression("Seawater "*sigma[theta]*" Calculator"), pos=4, cex=1.4*cexText)
-text(-0.25, 0.35, expression("(1) Place T=0 above observed S."), pos=4, cex=cexText)
-text(-0.24, 0.30, expression("(2) Move pointer to observed T."), pos=4, cex=cexText)
-text(-0.33, 0.25, expression("(3) Read approximate "*sigma[theta]*" from inner ring."), pos=4, cex=cexText)
-text(-0.25, 0.20, expression("(4) Add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
+y <- 0.40
+dy <- 0.05
+text(-0.26, y, expression("Seawater "*sigma[theta]*" Calculator"), pos=4, cex=1.4*cexText)
+y <- y - dy
+text(-0.25, y, expression("(1) Place T=0 above observed S,"), pos=4, cex=cexText)
+y <- y - dy
+text(-0.24, y, expression("(2) move pointer to observed T,"), pos=4, cex=cexText)
+y <- y - dy
+text(-0.35, y, expression("(3) read approximate "*sigma[theta]*" from inner ring, and"), pos=4, cex=cexText)
+y <- y - dy
+text(-0.25, y, expression("(4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
+y <- y - dy
 ##text(sigthe0, D0, sprintf("E.G. %.2f kg/m^3 at S=%.0f, T=%.0fC", swSigmaTheta(35, 0, 0), 35, 20, 0), pos=4)
 EGS <- 32
 EGT <- 5
 EGp <- 0
 EGsigma <- sprintf("%.2f", round(swSigmaTheta(EGS, EGT, EGp), 3))
-text(-0.38, 0.15, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
+text(-0.38, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
+y <- y - dy
 ERRrms <- round(RMS(residuals(m)), 2)
 ERRmax <- round(max(residuals(m)), 2)
-text(x, y0, bquote("Error: "*.(ERRrms)*kg/m^3*" (rms), "*.(ERRmax)*kg/m^3*" (max) from 0 to 500dbar."), pos=4, cex=cexText)
+text(-0.5, y, bquote("Error: "*.(ERRrms)*kg/m^3*" (rms), "*.(ERRmax)*kg/m^3*" (max) from 0 to 500dbar."), pos=4, cex=cexText)
+y <- y - dy
+text(-0.6, y, "For CTT from DEK", pos=4, cex=cexText)
+text(+0.2, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
 
 text(0.08, 0.58, expression(sigma[theta]*" ["* kg/m^3*"]"), cex=1, srt=-10)
-text(0.15, 0.72, expression("Salinity"), cex=1, srt=-10)
+text(0.19, 0.72, expression("Salinity"), cex=1, srt=-15)
 
 omar <- par("mar")
 par(new=TRUE)
 #par(mar=omar+c(3,38,5,1), mgp=c(0.7, 0.2, 0), cex=0.6, tcl=-0.25)
-par(mai=c(2.4,2.8,3.2,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
+par(mai=c(2.1,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
 range <- range((G$S - Smid)*(G$T - Tmid))
 x <- seq(range[1], range[2], length.out=n)
 plot(x, C["SSTT"]*x, lwd=2, xaxs="i",
      xlab=paste("(S-", Smid, ")*(T-", Tmid, ")", sep=""), ylab=expression(kg/m^3), type="l")
+mtext("0.00", side=2, at=0, line=0.3, cex=0.9)
 grid(lty=1, col="lightgray")
 rug(side=2, x=seq(-0.1,0.1,by=0.01), ticksize=-0.02)
 legend("topright", legend=expression("Add to "*sigma[theta]), bg="white")
