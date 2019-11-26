@@ -140,10 +140,10 @@ text(+0.2, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
 omar <- par("mar")
 par(new=TRUE)
 #par(mar=omar+c(3,38,5,1), mgp=c(0.7, 0.2, 0), cex=0.6, tcl=-0.25)
-par(mai=c(2.1,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
+par(mai=c(2.1,2.8,3.9,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
 range <- range((G$S - Smid)*(G$T - Tmid))
 x <- seq(range[1], range[2], length.out=n)
-plot(x, C["SSTT"]*x, lwd=2, xaxs="i",
+plot(x, C["SSTT"]*x, lwd=2, xaxs="i", ylim=c(-0.1, 0.1),
      xlab=paste("(S-", Smid, ")*(T-", Tmid, ")", sep=""), ylab=expression(kg/m^3), type="l")
 mtext("0.00", side=2, at=0, line=0.3, cex=0.9)
 grid(lty=1, col="lightgray")
