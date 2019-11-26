@@ -1,4 +1,4 @@
-all:00.out 01.out 02.out 03.out 04.out sigma_theta_ruler_1.out README.pdf
+all:00.out 01.out 02.out 03.out 04.out sigma_theta_ruler_1.out sigma_theta_circular_1.out README.pdf
 %.out: %.R
 	Rscript $< > $@
 %.pdf: %.Rmd
