@@ -23,6 +23,7 @@ par(mar=rep(1, 4))
 sigthe0 <- floor(swSigmaTheta(min(G$S), max(G$T), 100))
 sigthemax <- ceiling(swSigmaTheta(max(G$S), min(G$T), 100))
 plot(c(-1, 1), c(-1, 1), xlab="", ylab="", type="n", axes=debug>0)# , yaxs="i", xaxs="i")
+points(0, 0) # for rivet
 if (debug)
     grid(col="pink", lty=1)
 
