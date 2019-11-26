@@ -1,6 +1,6 @@
 library(oce)
 debug <- 0
-cexName <- 0.9
+cexName <- 1.25
 load("00.rda")
 load("04.rda")
 C <- coef(m)
@@ -78,21 +78,21 @@ SBig <- seq(S0, Smax, by=1)
 SMiddle <- seq(S0, Smax, by=0.5)
 SSmall <- seq(S0, Smax, by=0.1)
 fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S, debug=debug)
-text(Sfunc(min(G$S)-1.0), 0.69, expression("Practical Salinity"), pos=1, cex=1)
+text(0.19, 0.72, expression("S"), cex=cexName, srt=-15)
 
 ## T axis
 TBig <- seq(T0, Tmax, by=2)
 TMiddle <- seq(T0, Tmax, by=1)
 TSmall <- seq(T0, Tmax, by=0.5)
 fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=FALSE, R=R$T, debug=debug)
-text(-0.265, R$T+0.06, expression("T ["*degree*"C]"), pos=1, cex=1, srt=16)
+text(-0.265, R$T+0.06, expression("T ["*degree*"C]"), pos=1, cex=cexName, srt=16)
 
 ## sigma-theta axis
 sigtheBig <- seq(sigthe0, sigthemax, by=1)
 sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
 sigtheSmall <- seq(sigthe0, sigthemax, by=0.1)
 fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe, debug=debug)
-text(min(sigtheSmall)+0.49, 0.14, expression(sigma[theta]*" ["*kg/m^3*"]"), pos=1, cex=cexName)
+text(0.08, 0.58, expression(sigma[theta]*" ["* kg/m^3*"]"), cex=cexName, srt=-10)
 circle(R=1, col=2)
 
 y0 <- 0.25
@@ -108,9 +108,9 @@ text(-0.25, y, expression("(1) Place T=0 above observed S,"), pos=4, cex=cexText
 y <- y - dy
 text(-0.24, y, expression("(2) move pointer to observed T,"), pos=4, cex=cexText)
 y <- y - dy
-text(-0.35, y, expression("(3) read approximate "*sigma[theta]*" from inner ring, and"), pos=4, cex=cexText)
+text(-0.33, y, expression("(3) read approximate "*sigma[theta]*" from inner ring,"), pos=4, cex=cexText)
 y <- y - dy
-text(-0.25, y, expression("(4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
+text(-0.35, y, expression("and then (4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
 y <- y - dy
 ##text(sigthe0, D0, sprintf("E.G. %.2f kg/m^3 at S=%.0f, T=%.0fC", swSigmaTheta(35, 0, 0), 35, 20, 0), pos=4)
 EGS <- 32
@@ -126,8 +126,6 @@ y <- y - dy
 text(-0.6, y, "For CTT from DEK", pos=4, cex=cexText)
 text(+0.2, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
 
-text(0.08, 0.58, expression(sigma[theta]*" ["* kg/m^3*"]"), cex=1, srt=-10)
-text(0.19, 0.72, expression("S"), cex=1.4, srt=-15)
 
 omar <- par("mar")
 par(new=TRUE)
