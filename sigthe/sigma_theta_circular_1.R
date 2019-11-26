@@ -1,6 +1,5 @@
 library(oce)
 debug <- 0
-cexName <- 1.25
 load("00.rda")
 load("04.rda")
 C <- coef(m)
@@ -14,14 +13,17 @@ Tfunc <- function(T)
 }
 
 if (!interactive()) pdf("sigma_theta_circular_1.pdf", width=7, height=7, pointsize=8)
-nseg <- 512 # segments in circle (128 is enough)
-xc <- 0
-yc <- 0
-R <- list(sigthe=0.65, S=0.8, T=0.81)
-scale <- 5 * 2 * pi
-par(mar=rep(1, 4))
+nseg <- 512                            # segments in circle (128 is enough, but more is okay)
+xc <- 0                                # centre x
+yc <- 0                                # centre y
+R <- list(sigthe=0.65, S=0.8, T=0.81)  # radii of axis circles
+scale <- 5 * 2 * pi                    # adjust this to fill most of circle
+cexName <- 1.25                        # cex for axis names
+## Get axis ranges from earlir analysis (see 00.R)
 sigthe0 <- floor(swSigmaTheta(min(G$S), max(G$T), 100))
 sigthemax <- ceiling(swSigmaTheta(max(G$S), min(G$T), 100))
+
+par(mar=rep(1, 4))
 plot(c(-1, 1), c(-1, 1), xlab="", ylab="", type="n", axes=debug>0)# , yaxs="i", xaxs="i")
 points(0, 0) # for rivet
 if (debug)
@@ -92,7 +94,12 @@ sigtheBig <- seq(sigthe0, sigthemax, by=1)
 sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
 sigtheSmall <- seq(sigthe0, sigthemax, by=0.1)
 fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe, debug=debug)
-text(0.08, 0.58, expression(sigma[theta]*" ["* kg/m^3*"]"), cex=cexName, srt=-10)
+text(0.00, R$sigthe-0.07, expression(sigma[theta]), cex=1.2*cexName, srt=-4)
+text(0.04, R$sigthe-0.068, expression(" ["), cex=cexName, srt=-5)
+text(0.08, R$sigthe-0.073, "kg", cex=cexName, srt=-10)
+text(0.115, R$sigthe-0.076, "/", cex=cexName, srt=-14)
+text(0.15, R$sigthe-0.077, expression(" "*m^3), cex=cexName, srt=-17)
+text(0.19, R$sigthe-0.10, "]", cex=cexName, srt=-22)
 circle(R=1, col=2)
 
 y0 <- 0.25
