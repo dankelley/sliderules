@@ -87,19 +87,22 @@ TBig <- seq(T0, Tmax, by=2)
 TMiddle <- seq(T0, Tmax, by=1)
 TSmall <- seq(T0, Tmax, by=0.5)
 fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=FALSE, R=R$T, debug=debug)
-text(-0.265, R$T+0.06, expression("T ["*degree*"C]"), pos=1, cex=cexName, srt=16)
+text(-0.312, R$T+0.030, expression("T"), pos=1, cex=cexName, srt=22)
+text(-0.280, R$T+0.046, expression("["), pos=1, cex=cexName, srt=19)
+text(-0.245, R$T+0.054, expression(degree*"C"), pos=1, cex=cexName, srt=17)
+text(-0.210, R$T+0.065, expression("]"), pos=1, cex=cexName, srt=13)
 
 ## sigma-theta axis
 sigtheBig <- seq(sigthe0, sigthemax, by=1)
 sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
 sigtheSmall <- seq(sigthe0, sigthemax, by=0.1)
 fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe, debug=debug)
-text(0.00, R$sigthe-0.07, expression(sigma[theta]), cex=1.2*cexName, srt=-4)
-text(0.04, R$sigthe-0.068, expression(" ["), cex=cexName, srt=-5)
-text(0.08, R$sigthe-0.073, "kg", cex=cexName, srt=-10)
-text(0.115, R$sigthe-0.076, "/", cex=cexName, srt=-14)
-text(0.15, R$sigthe-0.077, expression(" "*m^3), cex=cexName, srt=-17)
-text(0.19, R$sigthe-0.10, "]", cex=cexName, srt=-22)
+text(0.000, R$sigthe-0.070, expression(sigma[theta]), cex=1.2*cexName, srt=-4)
+text(0.040, R$sigthe-0.068, expression(" ["), cex=cexName, srt=-5)
+text(0.080, R$sigthe-0.073, "kg", cex=cexName, srt=-10)
+text(0.118, R$sigthe-0.076, "/", cex=cexName, srt=-14)
+text(0.153, R$sigthe-0.077, expression(" "*m^3), cex=cexName, srt=-17)
+text(0.190, R$sigthe-0.100, "]", cex=cexName, srt=-20)
 circle(R=1, col=2)
 
 y0 <- 0.25
@@ -155,6 +158,9 @@ lines(x, C["SSTT"]*x, lwd=2)
 ##     mtext("error 0.1 kg/m^3", side=3, at=24.58, col=2)
 ##     par(xpd=NA)
 ## }
+
+par(mar=rep(0.5, 4))
+box()
 
 if (!interactive()) dev.off()
 
