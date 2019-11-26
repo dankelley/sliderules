@@ -33,7 +33,7 @@ circle <- function(R, ...)
     lines(xc + R * cos(theta), yc + R * sin(theta), ...)
 }
 
-myrugCircular <- function(x, tcl, R, inside=TRUE)
+myrugCircular <- function(x, tcl, R, inside=TRUE, debug=debug)
 {
     if (debug > 1)
         cat("  in myrugCircular(x=c(", x[1], ",", x[2], ",...,", tail(x,1), "), tcl=", tcl, ", R=", R, ")\n")
@@ -48,7 +48,7 @@ myrugCircular <- function(x, tcl, R, inside=TRUE)
     par(xpd=oldxpd)
 }
 
-fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, tclBig, inside=TRUE, R=1)
+fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, tclBig, inside=TRUE, R=1, debug=0)
 {
     if (missing(func)) func <- function(x) x
     if (missing(tclSmall)) tclSmall <- 0.01 * if (inside) 1 else -1
@@ -56,7 +56,7 @@ fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, 
     if (missing(tclBig)) tclBig <- sqrt(2) * tclMiddle
     labels <- xBig
     if (debug > 0) {
-        cat("in fancyAxisCircular(R=", R, ")\n")
+        cat("in fancyAxisCircular(inside=", inside, ", R=", R, ")\n")
         cat("  ", vectorShow(labels))
         cat("  ", vectorShow(xSmall))
         cat("  ", vectorShow(xMiddle))
@@ -64,13 +64,11 @@ fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, 
     }
     oldxpd <- par("xpd")
     par(xpd=NA)
-    myrugCircular(scale * func(xSmall), tcl=tclSmall, inside=inside, R=R)
-    myrugCircular(scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R)
-    myrugCircular(scale * func(xBig), tcl=tclBig, inside=inside, R=R)
-    RR <- if (inside) R-2.25*tclBig else R+2.25*tclBig
-    text(xc + RR * cos(scale*pi/180*func(xBig)),
-         yc + RR * sin(scale*pi/180*func(xBig)), xBig)
-    ##2.5*tclBig + scale*pi/180*rep(R, length.out=length(xBig))), xBig)
+    myrugCircular(scale * func(xSmall), tcl=tclSmall, inside=inside, R=R, debug=debug)
+    myrugCircular(scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R, debug=debug)
+    myrugCircular(scale * func(xBig), tcl=tclBig, inside=inside, R=R, debug=debug)
+    text(xc + (R-2.5*tclBig) * cos(scale*pi/180*func(xBig)),
+         yc + (R-2.5*tclBig) * sin(scale*pi/180*func(xBig)), xBig)
     circle(R=R)
     par(xpd=oldxpd)
 }
@@ -79,27 +77,21 @@ fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, 
 SBig <- seq(S0, Smax, by=1)
 SMiddle <- seq(S0, Smax, by=0.5)
 SSmall <- seq(S0, Smax, by=0.1)
-fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S)
-text(Sfunc(min(G$S)-1.0), 0.69, expression("Practical Salinity"), pos=1, cex=1)#cexName)
-#text(Sfunc(min(SBig))+0.4, 0.69, expression("S"), pos=1, cex=cexName)
+fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S, debug=debug)
+text(Sfunc(min(G$S)-1.0), 0.69, expression("Practical Salinity"), pos=1, cex=1)
 
+## T axis
 TBig <- seq(T0, Tmax, by=2)
 TMiddle <- seq(T0, Tmax, by=1)
 TSmall <- seq(T0, Tmax, by=0.5)
-fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=TRUE, R=R$T)
-oldxpd <- par("xpd")
-par(xpd=NA)
-text(Tfunc(max(TBig)+4), 1.130, expression("In-situ Temperature ["*degree*"C]"), pos=1, cex=1)#cexName)
-#text(Tfunc(max(TBig)-1), 1.125, expression("T ["*degree*"C]"), pos=1, cex=cexName)
-#text(Tfunc(max(TBig)-1), 1.125, expression("T"), pos=1, cex=cexName)
-par(xpd=oldxpd)
-
+fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=FALSE, R=R$T, debug=debug)
+text(-0.265, R$T+0.06, expression("T ["*degree*"C]"), pos=1, cex=1, srt=16)
 
 ## sigma-theta axis
 sigtheBig <- seq(sigthe0, sigthemax, by=1)
 sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
 sigtheSmall <- seq(sigthe0, sigthemax, by=0.1)
-fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe)
+fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe, debug=debug)
 text(min(sigtheSmall)+0.49, 0.14, expression(sigma[theta]*" ["*kg/m^3*"]"), pos=1, cex=cexName)
 circle(R=1, col=2)
 
@@ -108,7 +100,7 @@ dy <- 0.08
 x <- sigthe0 - 0.1
 ##cexText <- 0.935
 cexText <- 0.95
-y <- 0.40
+y <- 0.45
 dy <- 0.05
 text(-0.26, y, expression("Seawater "*sigma[theta]*" Calculator"), pos=4, cex=1.4*cexText)
 y <- y - dy
@@ -135,7 +127,7 @@ text(-0.6, y, "For CTT from DEK", pos=4, cex=cexText)
 text(+0.2, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
 
 text(0.08, 0.58, expression(sigma[theta]*" ["* kg/m^3*"]"), cex=1, srt=-10)
-text(0.19, 0.72, expression("Salinity"), cex=1, srt=-15)
+text(0.19, 0.72, expression("S"), cex=1.4, srt=-15)
 
 omar <- par("mar")
 par(new=TRUE)
