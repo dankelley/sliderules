@@ -121,21 +121,21 @@ for (layer in c("lower", "upper")) {
         y <- y - dy
         text(-0.25, y, expression("(1) Place T=0 above observed S,"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.24, y, expression("(2) move pointer to observed T,"), pos=4, cex=cexText)
+        text(-0.29, y, expression("(2) move radial pointer to observed T,"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.33, y, expression("(3) read approximate "*sigma[theta]*" from inner ring,"), pos=4, cex=cexText)
+        text(-0.31, y, expression("(3) read approximate "*sigma[theta]*" from inner ring"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.35, y, expression("and then (4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
+        text(-0.33, y, expression("and then (4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
         y <- y - dy
         EGS <- 32
         EGT <- 5
         EGp <- 0
         EGsigma <- sprintf("%.2f", round(swSigmaTheta(EGS, EGT, EGp), 3))
-        text(-0.38, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
+        text(-0.37, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
         y <- y - dy
         ERRrms <- round(RMS(residuals(m)), 2)
         ERRmax <- round(max(residuals(m)), 2)
-        text(-0.5, y, bquote("Range: 0-500 dbar; error: "*.(ERRrms)*kg/m^3*" (rms), "*.(ERRmax)*kg/m^3*" (max)"), pos=4, cex=cexText)
+        text(-0.53, y, bquote("Accurate to "*.(ERRrms)*kg/m^3*" (rms) and "*.(ERRmax)*kg/m^3*" (max) up to 500 dbar."), pos=4, cex=cexText)
         y <- y - dy
         text(-0.48, y, "Ser. No. 1, for CTT", pos=4, cex=cexText, font=2)
         text(+0.15, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
