@@ -1,16 +1,14 @@
-## Instructions: cut along the gray dotted circles.
+## Instructions: cut along the gray dotted circles. Create a transparent radial
+## pointer that reaches to the T axis. Pin these three things together, to
+## swivel about the marked central point.
+
 library(oce)
 debug <- 0
-colSigmaTheta <- "royalblue"
-colT <- "darkred"
-colS <- "darkgreen"
 load("00.rda")
 load("04.rda")
 C <- coef(m)
-nseg <- 512                            # segments in circle (128 is enough, but more is okay)
-xc <- 0                                # centre x
-yc <- 0                                # centre y
 R <- list(sigthe=0.65, S=0.8, T=0.81)  # radii of axis circles
+col <- list(sigmaTheta="royalblue", T="darkred", S="darkgreen")
 scale <- 5 * 2 * pi                    # adjust this to fill most of circle
 cexName <- 1.25                        # cex for axis names
 ## Get axis ranges from earlir analysis (see 00.R)
@@ -26,10 +24,10 @@ Tfunc <- function(T)
 {
     Sfunc(Smax) + C["TT"]*(T-T0) + C["TT2"]*(T-T0)^2
 }
-circle <- function(R, ...)
+circle <- function(R, nseg=512, ...)
 {
     theta <- seq(0, 2*pi, length.out=nseg)
-    lines(xc + R * cos(theta), yc + R * sin(theta), ...)
+    lines(R * cos(theta), R * sin(theta), ...)
 }
 
 myrugCircular <- function(x, tcl, R, inside=TRUE, col=col, debug=debug)
@@ -39,10 +37,10 @@ myrugCircular <- function(x, tcl, R, inside=TRUE, col=col, debug=debug)
     oldxpd <- par("xpd")
     par(xpd=NA)
     tcl <- abs(tcl) * if (inside) -1 else 1
-    x0 <- xc + R * cos(x*pi/180)
-    y0 <- yc + R * sin(x*pi/180)
-    x1 <- xc + (R + tcl) * cos(x*pi/180)
-    y1 <- yc + (R + tcl) * sin(x*pi/180)
+    x0 <- R * cos(x*pi/180)
+    y0 <- R * sin(x*pi/180)
+    x1 <- (R + tcl) * cos(x*pi/180)
+    y1 <- (R + tcl) * sin(x*pi/180)
     segments(x0, y0, x1, y1, col=col)
     par(xpd=oldxpd)
 }
@@ -68,7 +66,7 @@ fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, 
     myrugCircular(scale * func(xBig), tcl=tclBig, inside=inside, R=R, col=col, debug=debug)
     theta <- scale * pi / 180 * func(xBig) # location along circumferenace
     for (i in seq_along(theta)) {
-        text(xc + (R-2.5*tclBig) * cos(theta[i]), yc + (R-2.5*tclBig) * sin(theta[i]), xBig[i],
+        text((R-2.5*tclBig) * cos(theta[i]), (R-2.5*tclBig) * sin(theta[i]), xBig[i],
              srt=-90+theta[i]*180/pi, col=col)
     }
     circle(R=R, col=col)
@@ -88,15 +86,11 @@ for (layer in c("lower", "upper")) {
         TBig <- seq(T0, Tmax, by=2)
         TMiddle <- seq(T0, Tmax, by=1)
         TSmall <- seq(T0, Tmax, by=0.5)
-        fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=FALSE, R=R$T, col=colT, debug=debug)
-        ## text(-0.312, R$T+0.030, expression("T"), pos=1, cex=cexName, srt=22, col=colT)
-        ## text(-0.280, R$T+0.046, expression("["), pos=1, cex=cexName, srt=19, col=colT)
-        ## text(-0.245, R$T+0.054, expression(degree*"C"), pos=1, cex=cexName, srt=17, col=colT)
-        ## text(-0.210, R$T+0.065, expression("]"), pos=1, cex=cexName, srt=13, col=colT)
-        text(-0.090, R$T+0.090, expression("T"), pos=1, cex=cexName, srt=5, col=colT)
-        text(-0.065, R$T+0.095, expression("["), pos=1, cex=cexName, srt=3.5, col=colT)
-        text(-0.035, R$T+0.095, expression(degree*"C"), pos=1, cex=cexName, srt=2, col=colT)
-        text(-0.002, R$T+0.095, expression("]"), pos=1, cex=cexName, srt=0.5, col=colT)
+        fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=FALSE, R=R$T, col=col$T, debug=debug)
+        text(-0.090, R$T+0.090, expression("T"), pos=1, cex=cexName, srt=5, col=col$T)
+        text(-0.065, R$T+0.095, expression("["), pos=1, cex=cexName, srt=3.5, col=col$T)
+        text(-0.035, R$T+0.095, expression(degree*"C"), pos=1, cex=cexName, srt=2, col=col$T)
+        text(-0.002, R$T+0.095, expression("]"), pos=1, cex=cexName, srt=0.5, col=col$T)
         circle(R=R$T+0.15, col="gray", lty="dotted")
     }
     if (layer == "upper") {
@@ -104,19 +98,19 @@ for (layer in c("lower", "upper")) {
         SBig <- seq(S0, Smax, by=1)
         SMiddle <- seq(S0, Smax, by=0.5)
         SSmall <- seq(S0, Smax, by=0.1)
-        fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S, col=colS, debug=debug)
-        text(0.19, 0.72, expression("S"), cex=cexName, srt=-15, col=colS)
+        fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S, col=col$S, debug=debug)
+        text(0.19, 0.72, expression("S"), cex=cexName, srt=-15, col=col$S)
         ## sigma-theta axis
         sigtheBig <- seq(sigthe0, sigthemax, by=1)
         sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
         sigtheSmall <- seq(sigthe0, sigthemax, by=0.1)
-        fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe, col=colSigmaTheta, debug=debug)
-        text(0.000, R$sigthe-0.070, expression(sigma[theta]), cex=1.2*cexName, srt=-4, col=colSigmaTheta)
-        text(0.040, R$sigthe-0.068, expression(" ["), cex=cexName, srt=-5, col=colSigmaTheta)
-        text(0.080, R$sigthe-0.073, "kg", cex=cexName, srt=-10, col=colSigmaTheta)
-        text(0.118, R$sigthe-0.076, "/", cex=cexName, srt=-14, col=colSigmaTheta)
-        text(0.153, R$sigthe-0.077, expression(" "*m^3), cex=cexName, srt=-17, col=colSigmaTheta)
-        text(0.190, R$sigthe-0.100, "]", cex=cexName, srt=-20, col=colSigmaTheta)
+        fancyAxisCircular(sigtheSmall, sigtheMiddle, sigtheBig, inside=TRUE, R=R$sigthe, col=col$sigmaTheta, debug=debug)
+        text(0.000, R$sigthe-0.070, expression(sigma[theta]), cex=1.2*cexName, srt=-4, col=col$sigmaTheta)
+        text(0.040, R$sigthe-0.068, expression(" ["), cex=cexName, srt=-5, col=col$sigmaTheta)
+        text(0.080, R$sigthe-0.073, "kg", cex=cexName, srt=-10, col=col$sigmaTheta)
+        text(0.118, R$sigthe-0.076, "/", cex=cexName, srt=-14, col=col$sigmaTheta)
+        text(0.153, R$sigthe-0.077, expression(" "*m^3), cex=cexName, srt=-17, col=col$sigmaTheta)
+        text(0.190, R$sigthe-0.100, "]", cex=cexName, srt=-20, col=col$sigmaTheta)
         y0 <- 0.25
         dy <- 0.08
         x <- sigthe0 - 0.1
@@ -141,10 +135,10 @@ for (layer in c("lower", "upper")) {
         y <- y - dy
         ERRrms <- round(RMS(residuals(m)), 2)
         ERRmax <- round(max(residuals(m)), 2)
-        text(-0.5, y, bquote("Error: "*.(ERRrms)*kg/m^3*" (rms), "*.(ERRmax)*kg/m^3*" (max) from 0 to 500dbar."), pos=4, cex=cexText)
+        text(-0.5, y, bquote("Range: 0-500 dbar; error: "*.(ERRrms)*kg/m^3*" (rms), "*.(ERRmax)*kg/m^3*" (max)"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.6, y, "For CTT from DEK", pos=4, cex=cexText)
-        text(+0.2, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
+        text(-0.48, y, "Ser. No. 1, for CTT", pos=4, cex=cexText, font=2)
+        text(+0.15, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
         circle(R=R$S+0.01, col="gray", lty="dotted")
         omar <- par("mar")
         par(new=TRUE)
@@ -153,9 +147,9 @@ for (layer in c("lower", "upper")) {
         x <- seq(range[1], range[2], length.out=n)
         plot(x, C["SSTT"]*x, lwd=1.4, xaxs="i", ylim=c(-0.1, 0.1),
              xlab=paste("(S-", Smid, ")*(T-", Tmid, ")", sep=""), ylab=expression(kg/m^3), type="l")
-        mtext("0.00", side=2, at=0, line=0.3, cex=0.9, col=colSigmaTheta)
+        mtext("0.00", side=2, at=0, line=0.3, cex=0.9, col=col$sigmaTheta)
         grid(lty=1, col="lightgray")
-        rug(side=2, x=seq(-0.1,0.1,by=0.01), ticksize=-0.02, col=colSigmaTheta)
+        rug(side=2, x=seq(-0.1,0.1,by=0.01), ticksize=-0.02, col=col$sigmaTheta)
         legend("topright", legend=expression("Add to "*sigma[theta]), bg="white")
         lines(x, C["SSTT"]*x, lwd=1.4)
     }
