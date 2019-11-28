@@ -3,7 +3,7 @@
 ## swivel about the marked central point.
 
 library(oce)
-debug <- 0
+debug <- 0 # set to 1 if adjusting central text (to centre by eye)
 load("00.rda")
 load("04.rda")
 C <- coef(m)
@@ -78,9 +78,9 @@ for (layer in c("lower", "upper")) {
         pdf(paste("sigma_theta_circular_1_", layer, ".pdf", sep=""), width=7, height=7, pointsize=8)
     par(mar=rep(1, 4), lwd=1.4)
     plot(c(-1, 1), c(-1, 1), xlab="", ylab="", type="n", axes=debug>0)# , yaxs="i", xaxs="i")
-    points(0, 0) # for rivet
     if (debug)
-        grid(col="pink", lty=1)
+        grid(nx=20, ny=20, col="pink")
+    points(0, 0) # for rivet
     if (layer == "lower") {
         ## T axis
         TBig <- seq(T0, Tmax, by=2)
@@ -99,7 +99,15 @@ for (layer in c("lower", "upper")) {
         SMiddle <- seq(S0, Smax, by=0.5)
         SSmall <- seq(S0, Smax, by=0.1)
         fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S, col=col$S, debug=debug)
-        text(0.19, 0.72, expression("S"), cex=cexName, srt=-15, col=col$S)
+        ## crude way to rotate text (ought to write a function for this)
+        text(0.110, R$S - 0.065, expression("S"), cex=cexName, srt=-09, col=col$S)
+        text(0.140, R$S - 0.072, expression("a"), cex=cexName, srt=-11, col=col$S)
+        text(0.160, R$S - 0.071, expression("l"), cex=cexName, srt=-12, col=col$S)
+        text(0.175, R$S - 0.074, expression("i"), cex=cexName, srt=-14.5, col=col$S)
+        text(0.194, R$S - 0.085, expression("n"), cex=cexName, srt=-16, col=col$S)
+        text(0.218, R$S - 0.088, expression("i"), cex=cexName, srt=-18, col=col$S)
+        text(0.235, R$S - 0.095, expression("t"), cex=cexName, srt=-20, col=col$S)
+        text(0.254, R$S - 0.110, expression("y"), cex=cexName, srt=-22, col=col$S)
         ## sigma-theta axis
         sigtheBig <- seq(sigthe0, sigthemax, by=1)
         sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
@@ -117,32 +125,32 @@ for (layer in c("lower", "upper")) {
         cexText <- 0.95
         y <- 0.45
         dy <- 0.05
-        text(-0.26, y, expression("Seawater "*sigma[theta]*" Calculator"), pos=4, cex=1.4*cexText)
+        text(-0.27, y, expression("Seawater "*sigma[theta]*" Calculator"), pos=4, cex=1.4*cexText)
+        y <- y - 1.2 * dy
+        text(-0.32, y, expression("(1) Set 0"*degree*"C to be at observed salinity,"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.25, y, expression("(1) Place T=0 above observed S,"), pos=4, cex=cexText)
+        text(-0.414, y, expression("(2) move radial pointer to observed temperature,"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.29, y, expression("(2) move radial pointer to observed T,"), pos=4, cex=cexText)
+        text(-0.325, y, expression("(3) read approximate "*sigma[theta]*" from inner ring"), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.31, y, expression("(3) read approximate "*sigma[theta]*" from inner ring"), pos=4, cex=cexText)
-        y <- y - dy
-        text(-0.33, y, expression("and then (4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
+        text(-0.35, y, expression("and then (4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
         y <- y - dy
         EGS <- 32
         EGT <- 5
         EGp <- 0
         EGsigma <- sprintf("%.2f", round(swSigmaTheta(EGS, EGT, EGp), 3))
-        text(-0.37, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
+        text(-0.375, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
         y <- y - dy
         ERRrms <- round(RMS(residuals(m)), 2)
         ERRmax <- round(max(residuals(m)), 2)
-        text(-0.53, y, bquote("Accurate to "*.(ERRrms)*kg/m^3*" (rms) and "*.(ERRmax)*kg/m^3*" (max) up to 500 dbar."), pos=4, cex=cexText)
+        text(-0.545, y, bquote("Accurate to "*.(ERRrms)*kg/m^3*" (rms) and "*.(ERRmax)*kg/m^3*" (max) up to 500 dbar."), pos=4, cex=cexText)
         y <- y - dy
         text(-0.48, y, "Ser. No. 1, for CTT", pos=4, cex=cexText, font=2)
         text(+0.15, y, "(c) 2019 Dan Kelley", pos=4, cex=cexText)
         circle(R=R$S+0.01, col="gray", lty="dotted")
         omar <- par("mar")
         par(new=TRUE)
-        par(mai=c(2.1,2.8,3.9,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
+        par(mai=c(2.2,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
         range <- range((G$S - Smid)*(G$T - Tmid))
         x <- seq(range[1], range[2], length.out=n)
         plot(x, C["SSTT"]*x, lwd=1.4, xaxs="i", ylim=c(-0.1, 0.1),
