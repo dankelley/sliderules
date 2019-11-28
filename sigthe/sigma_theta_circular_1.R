@@ -24,10 +24,38 @@ Tfunc <- function(T)
 {
     Sfunc(Smax) + C["TT"]*(T-T0) + C["TT2"]*(T-T0)^2
 }
+
 circle <- function(R, nseg=512, ...)
 {
     theta <- seq(0, 2*pi, length.out=nseg)
     lines(R * cos(theta), R * sin(theta), ...)
+}
+
+circularText <- function(R, theta0, dtheta, text, ...) # angles in deg
+{
+    letters <- strsplit(text, "")[[1]]
+    theta <- theta0
+    i <- 1
+    while (i <= length(letters)) {
+        if (letters[i] == "\\") {
+            if (letters[i+1] == "!") {
+                message("negative thinspace")
+                theta <- theta - dtheta / 4
+            } else if (letters[i+1] == ":") {
+                message("positive thinspace")
+                theta <- theta + dtheta / 4
+            } else {
+                warning("unrecognized \\ character\n")
+            }
+            i <- i + 1 # skip over next char, which is the code
+        } else {
+            thetaRadians <- pi / 180 * theta
+            message("i=", i, ", letter='", letters[i], "'")
+            text(R * cos(thetaRadians), R * sin(thetaRadians), letters[i], srt=theta-90, pos=1, ...)
+            theta <- theta + dtheta
+        }
+        i <- i + 1
+    }
 }
 
 myrugCircular <- function(x, tcl, R, inside=TRUE, col=col, debug=debug)
@@ -87,10 +115,8 @@ for (layer in c("lower", "upper")) {
         TMiddle <- seq(T0, Tmax, by=1)
         TSmall <- seq(T0, Tmax, by=0.5)
         fancyAxisCircular(TSmall, TMiddle, TBig, func=Tfunc, inside=FALSE, R=R$T, col=col$T, debug=debug)
-        text(-0.090, R$T+0.090, expression("T"), pos=1, cex=cexName, srt=5, col=col$T)
-        text(-0.065, R$T+0.095, expression("["), pos=1, cex=cexName, srt=3.5, col=col$T)
-        text(-0.035, R$T+0.095, expression(degree*"C"), pos=1, cex=cexName, srt=2, col=col$T)
-        text(-0.002, R$T+0.095, expression("]"), pos=1, cex=cexName, srt=0.5, col=col$T)
+        circularText(R$T+0.08, 80, -2.1, "T\\!emp\\!e\\!r\\!a\\!t\\!u\\!r\\!e\\:\\:[ \\:]", cex=cexName, col=col$T)
+        text(0.472, R$T-0.058, expression(degree*"C"), pos=1, cex=cexName, srt=-32, col=col$T)
         circle(R=R$T+0.15, col="gray", lty="dotted")
     }
     if (layer == "upper") {
@@ -99,15 +125,8 @@ for (layer in c("lower", "upper")) {
         SMiddle <- seq(S0, Smax, by=0.5)
         SSmall <- seq(S0, Smax, by=0.1)
         fancyAxisCircular(SSmall, SMiddle, SBig, func=Sfunc, inside=TRUE, R=R$S, col=col$S, debug=debug)
-        ## crude way to rotate text (ought to write a function for this)
-        text(0.110, R$S - 0.065, expression("S"), cex=cexName, srt=-09, col=col$S)
-        text(0.140, R$S - 0.072, expression("a"), cex=cexName, srt=-11, col=col$S)
-        text(0.160, R$S - 0.071, expression("l"), cex=cexName, srt=-12, col=col$S)
-        text(0.175, R$S - 0.074, expression("i"), cex=cexName, srt=-14.5, col=col$S)
-        text(0.194, R$S - 0.085, expression("n"), cex=cexName, srt=-16, col=col$S)
-        text(0.218, R$S - 0.088, expression("i"), cex=cexName, srt=-18, col=col$S)
-        text(0.235, R$S - 0.095, expression("t"), cex=cexName, srt=-20, col=col$S)
-        text(0.254, R$S - 0.110, expression("y"), cex=cexName, srt=-22, col=col$S)
+        circularText(R$S-0.02, 82, -2, "S\\:al\\!inity", cex=cexName, col=col$S)
+        ##
         ## sigma-theta axis
         sigtheBig <- seq(sigthe0, sigthemax, by=1)
         sigtheMiddle <- seq(sigthe0, sigthemax, by=0.5)
