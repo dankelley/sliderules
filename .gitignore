@@ -4,3 +4,4 @@
 *.rda
 *.out
 .DS_Store
+.Rhistory
