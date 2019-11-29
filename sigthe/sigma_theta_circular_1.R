@@ -101,7 +101,7 @@ fancyAxisCircular <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, 
     par(xpd=oldxpd)
 }
 
-for (layer in c("lower", "upper")) {
+for (layer in c("lower", "upper", "pointer")) {
     if (!interactive())
         pdf(paste("sigma_theta_circular_1_", layer, ".pdf", sep=""), width=7, height=7, pointsize=8)
     par(mar=rep(1, 4), lwd=1.4)
@@ -118,8 +118,7 @@ for (layer in c("lower", "upper")) {
         circularText(R$T+0.08, 80, -2.1, "T\\!emp\\!e\\!r\\!a\\!t\\!u\\!r\\!e\\:\\:[ \\:]", cex=cexName, col=col$T)
         text(0.472, R$T-0.058, expression(degree*"C"), pos=1, cex=cexName, srt=-32, col=col$T)
         circle(R=R$T+0.15, col="gray", lty="dotted")
-    }
-    if (layer == "upper") {
+    } else if (layer == "upper") {
         ## S axis
         SBig <- seq(S0, Smax, by=1)
         SMiddle <- seq(S0, Smax, by=0.5)
@@ -179,6 +178,17 @@ for (layer in c("lower", "upper")) {
         rug(side=2, x=seq(-0.1,0.1,by=0.01), ticksize=-0.02, col=col$sigmaTheta)
         legend("topright", legend=expression("Add to "*sigma[theta]), bg="white")
         lines(x, C["SSTT"]*x, lwd=1.4)
+    } else if (layer == "pointer") {
+        circle(R=R$T+0.15, col="gray", lty="dotted")
+        pointerWidth <- 0.1
+        lines(rep(pointerWidth, 2), c(0, R$T+0.15-pointerWidth))
+        lines(rep(-pointerWidth, 2), c(0, R$T+0.15-pointerWidth))
+        theta <-seq(-pi, 0, length.out=128)
+        pointerRadius <- pointerWidth
+        lines(pointerRadius*cos(theta), pointerRadius*sin(theta))
+        lines(pointerRadius*cos(-theta), R$T+0.15-pointerWidth+pointerRadius*sin(-theta))
+    } else {
+        stop("unrecognized 'layer' (programming error)")
     }
     par(mar=rep(0.5, 4))
     box()
