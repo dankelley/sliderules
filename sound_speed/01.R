@@ -38,45 +38,17 @@ m4d <- lm(ss ~ S + T + T2 + T3 + T4 + p + p2 + p3 + p4, data=G)
 m4e <- lm(ss ~ S + T + T2 + T3 + T4 + p + p2 + p3 + p4 + pT, data=G)
 m5 <- lm(ss ~ S + T + T2 + p + p2 + pT, data=G)
 m6 <- lm(ss ~ S + T + T2 + T3 + p + p2 + p3, data=G)
-summary(m0)
-summary(m1)
-summary(m2)
-summary(m3)
-summary(m4)
-summary(m5)
-summary(m6)
-message(sprintf("m4:  rms error %.3f%%, worst-case %.3f%% (2nd order in T and p)",
-                100*RMS(ss - predict(m4))/diff(range(ss)),
-                100*max(abs(ss - predict(m4))) / diff(range(ss))))
-message(sprintf("m4b: rms error %.3f%%, worst-case %.3f%% (2nd order in T, 3rd order in p)",
-                100*RMS(ss - predict(m4b))/diff(range(ss)),
-                100*max(abs(ss - predict(m4b))) / diff(range(ss))))
-message(sprintf("m4c: rms error %.3f%%, worst-case %.3f%% (3rd order in p and T)",
-                100*RMS(ss - predict(m4c))/diff(range(ss)),
-                100*max(abs(ss - predict(m4c))) / diff(range(ss))))
-message(sprintf("m4d: rms error %.3f%%, worst-case %.3f%% (4th order in p and T)",
-                100*RMS(ss - predict(m4d))/diff(range(ss)),
-                100*max(abs(ss - predict(m4d))) / diff(range(ss))))
-message(sprintf("m4e: rms error %.3f%%, worst-case %.3f%% (4th order in p and T; 1st order in pT)",
-                100*RMS(ss - predict(m4e))/diff(range(ss)),
-                100*max(abs(ss - predict(m4e))) / diff(range(ss))))
-message(sprintf("m5:  rms error %.3f%%, worst-case %.3f%% (2nd order in p and T, 1st order in pT)",
-                100*RMS(ss - predict(m5))/diff(range(ss)),
-                100*max(abs(ss - predict(m5))) / diff(range(ss))))
-message(sprintf("m6:  rms error %.3f%%, worst-case %.3f%% (3rd order in p and T)",
-                100*RMS(ss - predict(m6))/diff(range(ss)),
-                100*max(abs(ss - predict(m6))) / diff(range(ss))))
-## coef(m4)
-## coef(m4e)
-
-# par(mar=c(3,3,1,1),mgp=c(2,0.7,0),mfrow=c(2,2))
-# smoothScatter(ss, ss-predict(m4))
-# hist(ss-predict(m4))
-# coplot(ss~G$T|G$p)
-#
-# smoothScatter(ss, ss-predict(m4))
-#
-# smoothScatter(G$S, ss)
-# smoothScatter(G$T, ss)
-# smoothScatter(G$p, ss)
+## summary(m0)
+## summary(m1) # conclude: S^2 term not significant
+## summary(m2)
+## summary(m3)
+## summary(m4)
+## summary(m5)
+## summary(m6)
+for (m in list(m0, m2, m3, m4, m4b, m4c, m4e, m6, m6)) {
+    message(sprintf("rms error %.3f%%, worst-case %.3f%% {%s}",
+                    100*RMS(ss - predict(m))/diff(range(ss)),
+                    100*max(abs(ss - predict(m))) / diff(range(ss)),
+                    as.character(m$call[2])))
+}
 
