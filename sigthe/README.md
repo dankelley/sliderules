@@ -20,7 +20,7 @@ Apparatus
 
 ![Sketch of slide rule.](sigmat_idea.png)
 
-Figure 1 illustrates the idea for a linear slide rule[1]. There are two
+Figure 1 illustrates the idea for a linear slide rule. There are two
 sliding scales. The lower one has *σ*<sub>*t*</sub> on the bottom side
 and *S* on the top side. The upper one has *T* on the lower side.
 
@@ -105,5 +105,3 @@ temperature scale.
 The result is a slide rule for calculating *σ*<sub>*θ*</sub>. To test
 it, follow the directions printed on the top layer, and see if you get
 the indicated test value.
-
-[1] A circular slide rule could also be set up.

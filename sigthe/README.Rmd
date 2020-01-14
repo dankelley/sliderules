@@ -40,10 +40,9 @@ reasonable application range.
 
 ![Sketch of slide rule.](sigmat_idea.png)
 
-Figure 1 illustrates the idea for a linear slide rule^[A circular slide rule
-could also be set up.].  There are two sliding scales. The lower one has
-$\sigma_t$ on the bottom side and $S$ on the top side.  The upper one has $T$
-on the lower side.
+Figure 1 illustrates the idea for a linear slide rule.  There are two sliding
+scales. The lower one has $\sigma_t$ on the bottom side and $S$ on the top
+side.  The upper one has $T$ on the lower side.
 
 
 # Usage
