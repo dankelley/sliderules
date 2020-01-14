@@ -31,10 +31,10 @@ this calculation.  Extending this to a nonlinear equation of state would involve
 writing
 \begin{equation}
 \label{e2}
-\sigma_\theta = \sigma_{\theta_0} + {\cal F}(S-S_0) + {\cal G}(T-T_0)
+\sigma_\theta = \sigma_{\theta_0} + F(S-S_0) + G(T-T_0)
 \end {equation}
-where ${\cal F}$ and ${\cal G}$ are devised to approximate the full equation of
-state over a reasonable application range.
+where $F$ and $G$ are devised to approximate the full equation of state over a
+reasonable application range.
 
 # Apparatus
 
