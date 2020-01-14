@@ -4,16 +4,16 @@ or
 *y* = *f*<sub>1</sub>(*x*<sub>1</sub>)*f*<sub>2</sub>(*x*<sub>2</sub>)
 can be handled with a 2-layer slide rule, while adding another layer
 permits
-*y* = *f*1(*x*<sub>1</sub>) + *f*2(*x*<sub>2</sub>) + *f*3(*x*<sub>3</sub>),
+*y* = *f*<sub>1</sub>(*x*<sub>1</sub>) + *f*<sub>2</sub>(*x*<sub>2</sub>) + *f*<sub>3</sub>(*x*<sub>3</sub>),
 etc.
 
 **Done**
 
--   sigma\_theta from S and T. See [sigthe](sigthe)
+-   *σ*<sub>*θ*</sub> from *S*, *T* and *p*: see [sigthe](sigthe)
 
 **Possible plans**
 
--   sound speed; see [sound\_speed](sound_speed)
+-   sound speed from *S*, *T* and *p*: see [sound\_speed](sound_speed)
 -   distance from delta-lon and delta-lat
 -   buoy knockdown from radius and water speed
 -   something to do with instrument time-constants
