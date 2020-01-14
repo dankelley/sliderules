@@ -77,9 +77,9 @@ Second-order model with cross-term and pressure-term
 ----------------------------------------------------
 
 Second-order polynomial regression analysis, including pressure (see
-`04.R`) on an 20**<sup>4</sup> grid covering the ranges
-28 &lt; *S* &lt; 36, 0 &lt; *T* &lt; 20 and 0 &lt; *p* &lt; 400 yields
-with *S*<sub>0</sub> = 28, *T*<sub>0</sub> = 0<sup>∘</sup>C,
+`04.R`) on an 20x20x20 grid covering the ranges 28 &lt; *S* &lt; 36,
+0 &lt; *T* &lt; 20 and 0 &lt; *p* &lt; 400 yields with
+*S*<sub>0</sub> = 28, *T*<sub>0</sub> = 0<sup>∘</sup>C,
 *S*<sub>\*</sub> = 32, *T*<sub>\*</sub> = 10<sup>∘</sup>C. The RMS
 misfit is 0.009 kg/m**<sup>3</sup>, and the maximum absolute misfit is
 0.0336kg/m**<sup>3</sup>. (I also tried with a linear pressure term but

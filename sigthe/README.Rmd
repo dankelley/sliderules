@@ -134,7 +134,7 @@ res <- residuals(m)
 ```
 
 Second-order polynomial regression analysis, including pressure (see `04.R`) on
-an `r n`$^4$ grid covering the ranges $`r S0`<S<`r Smax`$, $`r T0`<T<`r Tmax`$
+an `r n`x`r n`x`r n` grid covering the ranges $`r S0`<S<`r Smax`$, $`r T0`<T<`r Tmax`$
 and $`r p0`<p<`r pmax`$ yields
 \begin{equation}
 \label{e6}
