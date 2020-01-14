@@ -152,7 +152,7 @@ to justify adding a second correction graph.
 
 # Device consruction
 
-Run `sigma_theta_circular_.R` non-interactively, which creates files named
+Run `sigma_theta_circular_1.R` non-interactively, which creates files named
 `sigma_theta_circular_1_lower.pdf` and `sigma_theta_circular_1_upper.pdf`.
 Print the files, and laminate in clear plastic to make reasonably rigid sheets.
 Trim each sheet along the dotted gray line, thus forming semi-rigid disks.
