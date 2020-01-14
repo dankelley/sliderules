@@ -1,17 +1,24 @@
-Oceanographic sliderules
+---
+title: Oceanographic sliderules
+author: Dan Kelley
+---
+
+A function of the form $y=f_1(x_1)+f_2(x_2)$ or $y=f_1(x_1) f_2(x_2)$ can be
+handled with a 2-layer slide rule, while adding another layer permits
+$y=f1(x_1)+f2(x_2)+f3(x_3)$, etc.
 
 **Done**
 
 * sigma_theta from S and T
 
-**Ideas**
+**Possible plans**
 
-All that is required is to express some z=z(x,y) in the form f1(z)=f2(x)+f3(y);
-note that we can change addition to multiplication by using logs.
-
+* sounds speed
 * distance from delta-lon and delta-lat
 * buoy knockdown from radius and water speed
 * something to do with instrument time-constants
-* something to do with waves. NB: the dispersion relationship is hard because it is not in the form f1(z)=f2(x)+f3(y)
-* something to do with gliders (buoyancy adjustment? adjusting waypoints for currents?)
+* something to do with waves. NB: the dispersion relationship is hard because
+  it is not in the form $z=f_1(x_1)+f_2(x_2)$.
+* something to do with gliders, perhaps buoyancy adjustment or adjusting
+  waypoints for currents.
 
