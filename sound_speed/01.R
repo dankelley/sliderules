@@ -48,7 +48,7 @@ m6 <- lm(ss ~ S + T + T2 + T3 + p + p2 + p3, data=G)
 for (m in list(m0, m2, m3, m4, m4b, m4c, m4e, m5, m6)) {
     message(sprintf("rms err. %.2f m/s (%.2f%% of range), worst %.2f m/s (%.2f%%) {%s}",
                     RMS(ss - predict(m)),
-                    100*RMS(ss - predict(m))/diff(range(ss)),
+                    100*RMS(ss - predict(m)) / diff(range(ss)),
                     max(abs(ss - predict(m))),
                     100*max(abs(ss - predict(m))) / diff(range(ss)),
                     as.character(m$call[2])))
