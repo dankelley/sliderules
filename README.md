@@ -9,11 +9,11 @@ $y=f1(x_1)+f2(x_2)+f3(x_3)$, etc.
 
 **Done**
 
-* sigma_theta from S and T
+* sigma_theta from S and T. See [sigthe]
 
 **Possible plans**
 
-* sounds speed
+* sound speed; see [sound_speed]
 * distance from delta-lon and delta-lat
 * buoy knockdown from radius and water speed
 * something to do with instrument time-constants
