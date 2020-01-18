@@ -1,0 +1,33 @@
+---
+title: Construction of a sound-speed slide rule
+author: Dan Kelley
+---
+
+Note: this document is auto-generated from `README.Rmd` via the `Makefile`.
+
+# Model selection
+
+
+```{r echo=FALSE}
+load('01_model_selection.rda')
+```
+See `01_model_selection.R` for the detailed procedure.  In a nutshell, models
+`m1`, `m2`, etc explore different combinations of variables. These all take the
+form of a polynomial in $S$, $T$ and $p$, where $T$ is in-situ temperature
+minus $T_0=`r T0`^\circ$C. (The reason for defining $T$ this way is so the
+slide rule scale for temperature can start at $T_0$; an offset like this is not
+needed for pressure because $0$dbar is a natural range limit.
+
+Taking first $S$, then $T$ and then $p$, model complexity was increased by
+adding polynomial terms, and `summary()` was used to find the highest useful
+term, by checking for a probability value (`Pr(>|t|)` in the output) that was
+not scored with three asterisks, (i.e. that exceedd the standard R threshold of
+2e-16).
+
+The best model was `m4`, and that was saved in `01_model_selection.rda` as
+`model`. The coefficients of the model are as follows
+```{r}
+coef(model)
+```
+
+
