@@ -3,7 +3,7 @@ title: Construction of a sound-speed slide rule
 author: Dan Kelley
 ---
 
-Note: this document is auto-generated from `README.Rmd` via the `Makefile`.
+Note: the PDF form of this document is auto-generated from `README.Rmd` via the `Makefile`.
 
 # Model selection
 
@@ -11,12 +11,15 @@ Note: this document is auto-generated from `README.Rmd` via the `Makefile`.
 ```{r echo=FALSE}
 load('01_model_selection.rda')
 ```
-See `01_model_selection.R` for the detailed procedure.  In a nutshell, models
-`m1`, `m2`, etc explore different combinations of variables. These all take the
-form of a polynomial in $S$, $T$ and $p$, where $T$ is in-situ temperature
-minus $T_0=`r T0`^\circ$C. (The reason for defining $T$ this way is so the
-slide rule scale for temperature can start at $T_0$; an offset like this is not
-needed for pressure because $0$dbar is a natural range limit.
+See `01_model_selection.R` for the detailed procedure and the outputs that
+guided that procedure.
+
+In a nutshell, models `m1`, `m2`, etc explore different combinations of
+variables. These all take the form of a polynomial in $S$, $T$ and $p$, where
+$T$ is in-situ temperature minus $T_0=`r T0`^\circ$C. (The reason for defining
+$T$ this way is so the slide rule scale for temperature can start at $T_0$; an
+offset like this is not needed for pressure because $0$dbar is a natural range
+limit.
 
 Taking first $S$, then $T$ and then $p$, model complexity was increased by
 adding polynomial terms, and `summary()` was used to find the highest useful
@@ -24,10 +27,68 @@ term, by checking for a probability value (`Pr(>|t|)` in the output) that was
 not scored with three asterisks, (i.e. that exceedd the standard R threshold of
 2e-16).
 
-The best model was `m4`, and that was saved in `01_model_selection.rda` as
-`model`. The coefficients of the model are as follows
+# Choice of 'best' model
+
+According to this scheme, the best model was `m4`, and that was saved in
+`01_model_selection.rda` as `model`.
+
+As noted in `01_model_selection.out`, model `m4` has
+```
+rms err. 0.4170 m/s (0.23% of range), worst 1.9201 m/s (1.07%) {ss ~ S + T + T2 + T3 + p + p2} 
+```
+
+# Summary of 'best' model
+
+```{r}
+summary(model)
+```
+
+# Coefficients of 'best' model
+
 ```{r}
 coef(model)
 ```
+```{r echo=FALSE}
+C <- coef(model)
+```
 
+# Slide-rule layout for 'best' model
 
+*Salinity*: range from $S_0=`r S0`$ to $S_{max}=`r Smax`$, with distance ($x$)
+function
+
+\begin{equation}
+x = `r C[1]` + `r C["S"]`S
+\end{equation}
+
+*Temperature*: range from $T_0=`r T0`^\circ$C to $T_{max}=`r Tmax`^\circ$C,
+with distance function
+
+\begin{equation}
+x = `r C["T"]`(T-T_0) + `r C["T2"]`(T-T_0)^2 + `r C["T3"]`(T-T_0)^3
+\end{equation}
+
+*Pressure*: range from $p_0=`r p0`$dbar to $p_{max}=`r pmax`$dbar,
+with distance function
+
+\begin{equation}
+x = `r C["p"]`p + `r C["p2"]`p^2
+\end{equation}
+
+The functions are illustrated below.
+
+```{r echo=FALSE, fig.width=7, fig.height=10, dev.args=list(pointsize=12)}
+par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(3,1))
+SS <- seq(S0, Smax, length.out=200)
+plot(SS, C[1] + C[["S"]] * SS,
+     xlab="Salinity", ylab="Sound Speed [m/s]", type="l", xaxs="i")
+grid()
+TT <- seq(T0, Tmax, length.out=200)
+plot(TT, C[["T"]] * (TT-T0) + C[["T2"]] * (TT-T0)^2 + C[["T3"]] * (TT-T0)^3,
+     xlab="Temperature [degC]", ylab="Add to Sound Speed [m/s]", type="l", xaxs="i")
+grid()
+pp <- seq(p0, pmax, length.out=200)
+plot(pp, C[["p"]] * pp + C[["p2"]] * pp^2,
+     xlab="Pressure [dbar]", ylab="Add to Sound Speed [m/s]", type="l", xaxs="i")
+grid()
+```

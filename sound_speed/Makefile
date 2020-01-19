@@ -1,6 +1,6 @@
 all:01_model_selection.out README.pdf
 %.out: %.R
-	Rscript $< > $@
+	Rscript $< &> $@
 %.pdf: %.Rmd
 	R --no-save -e 'library(rmarkdown); render("'$<'", "pdf_document")'
 clean: force

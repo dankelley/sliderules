@@ -42,24 +42,22 @@ m5 <- lm(ss ~ S + T + T2 + T3 + p + p2 + p3, data=G)
 summary(m5) # adding p3 does not help; its p is 0.0687
 m6 <- lm(ss ~ S + T + T2 + T3 + T4 + p + p2, data=G)
 summary(m6) # adding T4 does not help much; its p is 0.0449
-##> sink("README.md")
-summary(m5)
-##> sink()
-for (m in list(m0, m1, m2, m3, m4, m5, m6)) {
-    message(sprintf("rms err. %.2f m/s (%.2f%% of range), worst %.2f m/s (%.2f%%) {%s}",
-                    RMS(ss - predict(m)),
-                    100*RMS(ss - predict(m)) / diff(range(ss)),
-                    max(abs(ss - predict(m))),
-                    100*max(abs(ss - predict(m))) / diff(range(ss)),
-                    as.character(m$call[2])))
+m7 <- lm(ss ~ S + T + T2 + T3 + T4 + p + p2 + pT, data=G)
+summary(m7)
+for (m in list(m0, m1, m2, m3, m4, m5, m6, m7)) {
+    cat(sprintf("rms err. %.4f m/s (%.2f%% of range), worst %.4f m/s (%.2f%%) {%s}",
+                RMS(ss - predict(m)),
+                100*RMS(ss - predict(m)) / diff(range(ss)),
+                max(abs(ss - predict(m))),
+                100*max(abs(ss - predict(m))) / diff(range(ss)),
+                as.character(m$call[2])), "\n")
 }
 cat(sprintf("overall S range: %.2f PSU\n", diff(range(G$S))))
 cat(sprintf("overall T range: %.2f degC\n", diff(range(G$T))))
 cat(sprintf("overall p range: %.2f dbar\n", diff(range(G$p))))
 cat(sprintf("overall ss (sound speed) range: %.2f m/s\n", diff(range(ss))))
 
-message("best model is m4, as follows. Note that T is in-situ temp - (", T0, " degC), T2 is T^2, p2 is p^2, etc")
-summary(m4)
+message("SAVING model m4 in 01_model_selection.rda; note that T is in-situ temp - (", T0, " degC), T2 is T^2, p2 is p^2, etc")
 model <- m4
 save(S0, T0, p0, Smax, Tmax, pmax, model, file="01_model_selection.rda")
 
