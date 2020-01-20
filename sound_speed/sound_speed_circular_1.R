@@ -1,16 +1,17 @@
-## Instructions: cut along the gray dotted circles. Create a transparent radial
-## pointer that reaches to the T axis. Pin these three things together, to
-## swivel about the marked central point.
-
+## Instructions for construction and use are printed on the output PDFs.
 library(oce)
 library(grid)
 RMS <- function(x) sqrt(mean(x^2, na.rm=TRUE))
 vectorLength <- 1000 # for axes
 debug <- 0 # set to 1 if adjusting central text (to centre by eye)
 load("01_model_selection.rda")
+errorRMS <- RMS(residuals(model) / predict(model))
+errorWorst <- max(residuals(model) / predict(model))
 C <- coef(model)
-R <- list(ss=0.65, T=0.8, p=0.9, S=0.91) # radii of axis circles
-col <- list(ss="royalblue", T="darkred", p="cyan",S="darkgreen")
+R <- list(ss=0.65, T=0.8, p=0.9, S=0.91, pointer=0.91) # radii of axis circles
+col <- list(ss="royalblue", T="darkred", p="cyan", S="darkgreen", cut="gray")
+lty <- list(cut="31")
+lwd <- list(cut=1.4)
 scale <- 0.27 * 2 * pi                 # adjust this to fill most of circle
 cexName <- 1.25                        # cex for axis names
 
@@ -35,6 +36,11 @@ circle <- function(R, nseg=512, ...)
     lines(R * cos(theta), R * sin(theta), ...)
 }
 
+cutCircle <- function(R)
+{
+    circle(R, col=col$cut, lty=lty$cut, lwd=lwd$cut)
+}
+
 #' draw text along a circular arc
 #'
 #' This has problems positioning letters, and so there are certain characters
@@ -47,7 +53,6 @@ circularText <- function(R, theta0, dtheta=-2.5, text, ...) # angles in deg
 {
     em <- grid::calcStringMetric("m")$width # width of 'm' in inches
     ex <- grid::calcStringMetric("x")$ascent # height of 'x' in inches
-    message(vectorShow(ex))
     if (is.numeric(text)) {
         ## Tighten space after a negative number
         text <- as.character(text)
@@ -175,7 +180,7 @@ circularAxis <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, tclBi
     par(xpd=oldxpd)
 }
 
-startPage <- function()
+startPage <- function(layer)
 {
     if (!interactive())
         pdf(paste("sound_speed_circular_1_", layer, ".pdf", sep=""), width=7, height=7, pointsize=8)
@@ -185,6 +190,28 @@ startPage <- function()
     box()
     if (debug)
         grid(nx=20, ny=20, col="pink")
+    mtext(paste0(" Seawater sound-speed slide rule (", layer, " layer)"), line=0, adj=0, font=2)
+    line <- -1
+    mtext(" Assembly instructions", line=line, adj=0, font=3)
+    if (layer == "pointer") {
+        line <- line - 1
+        mtext(" Cut along the dotted gray oblong shape,", line=line, adj=0)
+        line <- line - 1
+        mtext("   trace the resultant perimeter onto transparent plastic,", line=line, adj=0)
+        line <- line - 1
+        mtext("   cut plastic along the traced outline,", line=line, adj=0)
+        line <- line - 1
+        mtext("   and draw the mid-line with waterproof ink.", line=line, adj=0)
+    } else {
+        line <- line - 1
+        mtext(" Cut just inside the dotted gray circle.", line=line, adj=0)
+    }
+    line <- line - 1
+    mtext(" Pierce at the central dot.", line=line, adj=0)
+    line <- line - 1
+    mtext(" Assemble layers by size, with pointer layer at top.", line=line, adj=0)
+    line <- line - 1
+    mtext(" Insert a pivot at the piercing.", line=line, adj=0)
 }
 
 endPage <- function()
@@ -193,13 +220,10 @@ endPage <- function()
         dev.off()
 }
 
-##for (layer in c("soundspeed and T", "p", "S", "pointer")) {
-for (layer in c("top", "middle", "bottom", "pointer")[1]) {
-    startPage()
+for (layer in c("top", "middle", "bottom", "pointer")[c(1,4)]) {
+    startPage(layer)
     userPerInch <- diff(par("usr")[1:2]) / par("pin")[1]
     points(0, 0)                       # pivet point
-    text(0,-0.10,sprintf("%.1fm/s at T=%.0f p=%.0f S=%.0f", swSoundSpeed(S0,0,p0),0,p0,S0),cex=0.8)
-    text(0,-0.17,sprintf("%.1fm/s at T=%.0f p=%.0f S=%.0f", swSoundSpeed(S0,20,p0),20,p0,S0),cex=0.8)
     if (layer == "top") {
         ## Temperature axis
         T <- seq(T0, Tmax, length.out=vectorLength)
@@ -222,33 +246,38 @@ for (layer in c("top", "middle", "bottom", "pointer")[1]) {
         cexText <- 0.95
         y <- 0.5
         dy <- 0.05
-        text(-0.12, y, expression("Seawater"), pos=4, cex=1.4*cexText)
+        text(0, y, "Seawater", cex=1.4*cexText)
         y <- y - 1.2 * dy
-        text(-0.17, y, expression("Sound Speed"), pos=4, cex=1.4*cexText)
-        y <- y - dy
-        text(-0.14, y, expression("Calculator"), pos=4, cex=1.4*cexText)
+        text(0, y, "Sound Speed Calculator", cex=1.4*cexText)
         y <- y - 1.2 * dy
-        text(-0.3, y, "(1) Align p=0dbar with observed T", pos=4, cex=cexText)
+        text(0, y, "Usage: Align p=0dbar with observed T,", cex=cexText)
         y <- y - dy
-        text(-0.3, y, paste0("(2) Align S=", S0, " with observed p"), pos=4, cex=cexText)
+        text(0, y, paste0("align S=", S0, " with observed p,"), cex=cexText)
         y <- y - dy
-        text(-0.3, y, "(3) Align pointer with observed S", pos=4, cex=cexText)
+        text(0, y, "align pointer with observed S,", cex=cexText)
         y <- y - dy
-        text(-0.3, y, "(4) Read sound speed at pointer", pos=4, cex=cexText)
+        text(0, y, "and then read sound speed at pointer.", cex=cexText)
         y <- y - dy
-        EGS <- 32
-        EGT <- 5
-        EGp <- 0
-        EGsigma <- sprintf("%.2f", round(swSigmaTheta(EGS, EGT, EGp), 3))
-        #text(-0.375, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
+        text(0, y, sprintf("Example: %.1fm/s at T=%.0f p=%.0f S=%.0f", swSoundSpeed(S0,0,p0),0,p0,S0), cex=cexText)
+        y <- -0.15
         y <- y - dy
-        ERRrms <- round(RMS(residuals(model)), 2)
-        ERRmax <- round(max(residuals(model)), 2)
-        #text(-0.545, y, bquote("Accurate to "*.(ERRrms)*kg/m^3*" (rms) and "*.(ERRmax)*kg/m^3*" (max) up to 500 dbar."), pos=4, cex=cexText)
+        text(0, y, sprintf("RMS error: %.1f m/s (%.2f%%)",
+                           RMS(residuals(model)),
+                           100*RMS(residuals(model)/predict(model))),
+             cex=cexText)
         y <- y - dy
-        #text(-0.48, y, "Ser. No. 1, for EC", pos=4, cex=cexText, font=2)
-        #text(+0.15, y, "(c) 2020 Dan Kelley", pos=4, cex=cexText)
-        circle(R=R$T+0.01, col="gray", lty="dotted")
+        text(0, y, sprintf("Maximum error: %.1f m/s (%.1f%%)",
+                           max(residuals(model)),
+                           100*max(residuals(model)/predict(model))),
+             cex=cexText)
+        y <- -0.4
+        text(0, y, "Model 1, S/N 1 (for EC)", cex=cexText)
+        y <- y - dy
+        text(0, y, "(c) 2020 Dan Kelley", cex=cexText)
+
+
+        cutCircle(R$T+0.01)
+
         ##Cross-terms omar <- par("mar")
         ##Cross-terms par(new=TRUE)
         ##Cross-terms par(mai=c(2.2,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
@@ -287,15 +316,6 @@ for (layer in c("top", "middle", "bottom", "pointer")[1]) {
         cexText <- 0.95
         y <- 0.45
         dy <- 0.05
-        ##> text(-0.27, y, expression("Seawater "*sigma[theta]*" Calculator"), pos=4, cex=1.4*cexText)
-        ##> y <- y - 1.2 * dy
-        ##> text(-0.32, y, expression("(1) Set 0"*degree*"C to be at observed salinity,"), pos=4, cex=cexText)
-        ##> y <- y - dy
-        ##> text(-0.414, y, expression("(2) move radial pointer to observed temperature,"), pos=4, cex=cexText)
-        ##> y <- y - dy
-        ##> text(-0.325, y, expression("(3) read approximate "*sigma[theta]*" from inner ring"), pos=4, cex=cexText)
-        ##> y <- y - dy
-        ##> text(-0.35, y, expression("and then (4) add "*sigma[theta]*" correction from graph."), pos=4, cex=cexText)
         y <- y - dy
         EGS <- 32
         EGT <- 5
@@ -307,9 +327,7 @@ for (layer in c("top", "middle", "bottom", "pointer")[1]) {
         ERRmax <- round(max(residuals(m)), 2)
         text(-0.545, y, bquote("Accurate to "*.(ERRrms)*kg/m^3*" (rms) and "*.(ERRmax)*kg/m^3*" (max) up to 500 dbar."), pos=4, cex=cexText)
         y <- y - dy
-        text(-0.48, y, "Ser. No. 1, for EC", pos=4, cex=cexText, font=2)
-        text(+0.15, y, "(c) 2020 Dan Kelley", pos=4, cex=cexText)
-        circle(R=R$S+0.01, col="gray", lty="dotted")
+        cutcircle(R=R$S+0.01)
         omar <- par("mar")
         par(new=TRUE)
         par(mai=c(2.2,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
@@ -323,14 +341,14 @@ for (layer in c("top", "middle", "bottom", "pointer")[1]) {
         legend("topright", legend=expression("Add to "*sigma[theta]), bg="white")
         lines(x, C["SSTT"]*x, lwd=1.4)
     } else if (layer == "pointer") {
-        circle(R=R$T+0.15, col="gray", lty="dotted")
         pointerWidth <- 0.1
-        lines(rep(pointerWidth, 2), c(0, R$T+0.15-pointerWidth))
-        lines(rep(-pointerWidth, 2), c(0, R$T+0.15-pointerWidth))
+        lines(rep(pointerWidth, 2), c(0, R$pointer+0.15-pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep(-pointerWidth, 2), c(0, R$pointer+0.15-pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
         theta <-seq(-pi, 0, length.out=128)
         pointerRadius <- pointerWidth
-        lines(pointerRadius*cos(theta), pointerRadius*sin(theta))
-        lines(pointerRadius*cos(-theta), R$T+0.15-pointerWidth+pointerRadius*sin(-theta))
+        lines(pointerRadius*cos(theta), pointerRadius*sin(theta), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(pointerRadius*cos(-theta), R$pointer+0.15-pointerWidth+pointerRadius*sin(-theta), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep(0, 2), c(0, R$pointer+0.15))
     } else {
         stop("unrecognized 'layer' (programming error)")
     }
