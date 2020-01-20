@@ -9,11 +9,13 @@ errorRMS <- RMS(residuals(model) / predict(model))
 errorWorst <- max(residuals(model) / predict(model))
 C <- coef(model)
 R <- list(ss=0.65, T=0.8, p=0.9, S=0.91, pointer=0.91) # radii of axis circles
-col <- list(ss="royalblue", T="darkred", p="cyan", S="darkgreen", cut="gray")
+R4col <- c("black", "#DF536B", "#61D04F", "#2297E6", "#28E2E5", "#CD0BBC", "#F5C710", "gray62")
+col <- list(ss=R4col[1], T=R4col[2], p=R4col[3], S=R4col[4], cut="gray")
 lty <- list(cut="31")
-lwd <- list(cut=1.4)
+lwd <- list(cut=1.4, axis=1)
 scale <- 0.27 * 2 * pi                 # adjust this to fill most of circle
 cexName <- 1.25                        # cex for axis names
+cutSpace <- c(0.01, 0.05, 0.03)        # inches between axis and cut lines for speed (and T) axes, p axis, S axis, and pointer
 
 Tfunc <- function(TT)
 {
@@ -92,7 +94,7 @@ circularText <- function(R, theta0, dtheta=-2.5, text, ...) # angles in deg
     }
 }
 
-circularRug <- function(x, tcl, R, inside=TRUE, col=col, debug=debug)
+circularRug <- function(x, tcl, R, inside=TRUE, col=col, lwd=par("lwd"), debug=debug)
 {
     if (debug > 1)
         cat("  in circularRug(x=c(", x[1], ",", x[2], ",...,", tail(x,1), "), tcl=", tcl, ", R=", R, ")\n")
@@ -106,7 +108,7 @@ circularRug <- function(x, tcl, R, inside=TRUE, col=col, debug=debug)
     y0 <- R * sin(theta)
     x1 <- (R + tcl) * cos(theta)
     y1 <- (R + tcl) * sin(theta)
-    segments(x0, y0, x1, y1, col=col)
+    segments(x0, y0, x1, y1, lwd=lwd, col=col)
     if (debug) {
         for (i in seq_along(x))
             cat(sprintf("rug[%d] at theta=%.2f x0=%5.2f y0=%5.2f and x1=%5.2f y1=%5.1f\n", i, theta[i], x0[i], y0[i], x1[i], y1[i]))
@@ -116,31 +118,35 @@ circularRug <- function(x, tcl, R, inside=TRUE, col=col, debug=debug)
 
 #' @param theta0 locaiton of min(x), in degrees clockwise of the top of the circle
 circularAxis2 <- function(x, sub, func, tclSmall, tclMiddle, tclBig,
-                          inside=TRUE, R=1, col="black",
+                          inside=TRUE, R=1, lwd=par("lwd"), col="black",
                           theta0=0, debug=0)
 {
     if (missing(sub)) sub <- c(10, 5, 1)
     if (missing(func)) func <- function(x) x
     if (missing(tclSmall)) tclSmall <- 0.015 * if (inside) 1 else -1
-    if (missing(tclMiddle)) tclMiddle <- 3/2 * tclSmall
-    if (missing(tclBig)) tclBig <- 3/2 * tclMiddle
+    if (missing(tclMiddle)) tclMiddle <- 1.8 * tclSmall
+    if (missing(tclBig)) tclBig <- 1.41 * tclMiddle
     xmin <- min(x, na.rm=TRUE)
     xmax <- max(x, na.rm=TRUE)
-    cat(vectorShow(c(xmin, xmax)))
-    cat(vectorShow(sub))
+    if (debug) {
+        cat(vectorShow(c(xmin, xmax)))
+        cat(vectorShow(sub))
+    }
     start <- sub[1] * floor(xmin/sub[1])
     xSmall <- seq(sub[3]*floor(xmin/sub[3]), sub[3]*floor(xmax/sub[3]), sub[3])
-    cat(vectorShow(xSmall))
     xMiddle <- seq(sub[2]*floor(xSmall[1]/sub[2]), sub[2]*floor(xmax/sub[2]), sub[2])
-    cat(vectorShow(xMiddle))
     xBig <- seq(sub[3]*floor(xMiddle[1]/sub[3]), sub[3]*floor(xmax/sub[3]), sub[1])
-    cat(vectorShow(xBig))
+    if (debug) {
+        cat(vectorShow(xSmall))
+        cat(vectorShow(xMiddle))
+        cat(vectorShow(xBig))
+    }
     labels <- xBig
     oldxpd <- par("xpd")
     par(xpd=NA)
-    circularRug(scale * func(xSmall), tcl=tclSmall, inside=inside, R=R, col=col, debug=debug)
-    circularRug(scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R, col=col, debug=debug)
-    circularRug(scale * func(xBig), tcl=tclBig, inside=inside, R=R, col=col, debug=debug)
+    circularRug(scale * func(xSmall), tcl=tclSmall, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
+    circularRug(scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
+    circularRug(scale * func(xBig), tcl=tclBig, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
     theta <- -pi / 180 * (scale * func(xBig)) # location along circumferenace
     rr <- R - 1.75 * tclBig
     for (i in seq_along(theta)) {
@@ -153,30 +159,7 @@ circularAxis2 <- function(x, sub, func, tclSmall, tclMiddle, tclBig,
     }
     message("circularAxis2(): func(xBig) = ", paste(round(func(xBig)), collapse=" "))
     ##points((R-2.5*tclBig) * cos(theta[1]), (R-2.5*tclBig) * sin(theta[1]),pch=20)
-    circle(R=R, col=col)
-    par(xpd=oldxpd)
-}
-
-circularAxis <- function(xSmall, xMiddle, xBig, func, tclSmall, tclMiddle, tclBig, inside=TRUE, R=1, col="black", theta0=pi/20, direction="cw", debug=0)
-{
-    if (missing(func)) func <- function(x) x
-    if (missing(tclSmall)) tclSmall <- 0.01 * if (inside) 1 else -1
-    if (missing(tclMiddle)) tclMiddle <- 2 * tclSmall
-    if (missing(tclBig)) tclBig <- sqrt(2) * tclMiddle
-    labels <- xBig
-    oldxpd <- par("xpd")
-    par(xpd=NA)
-    circularRug(scale * func(xSmall), tcl=tclSmall, inside=inside, R=R, col=col, debug=debug)
-    circularRug(scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R, col=col, debug=debug)
-    circularRug(scale * func(xBig), tcl=tclBig, inside=inside, R=R, col=col, debug=debug)
-    theta <- scale * pi / 180 * func(xBig) # location along circumferenace
-    angle <- theta0 + theta * if (direction=="cw") -1 else 1
-    rr <- R - 2.5 * tclBig
-    for (i in seq_along(angle)) {
-        text(rr * cos(angle[i]), rr * sin(angle[i]),
-             xBig[i], srt=-90+angle[i]*180/pi, col=col)
-    }
-    circle(R=R, col=col)
+    circle(R=R, col=col, lwd=lwd, )
     par(xpd=oldxpd)
 }
 
@@ -209,7 +192,7 @@ startPage <- function(layer)
     line <- line - 1
     mtext(" Pierce at the central dot.", line=line, adj=0)
     line <- line - 1
-    mtext(" Assemble layers by size, with pointer layer at top.", line=line, adj=0)
+    mtext(" Stack layers by size, with pointer at top.", line=line, adj=0)
     line <- line - 1
     mtext(" Insert a pivot at the piercing.", line=line, adj=0)
 }
@@ -220,7 +203,8 @@ endPage <- function()
         dev.off()
 }
 
-for (layer in c("top", "middle", "bottom", "pointer")[c(1,4)]) {
+## for (layer in c("top", "middle", "bottom", "pointer")[c(3)]) {
+for (layer in c("top", "middle", "bottom", "pointer")) {
     startPage(layer)
     userPerInch <- diff(par("usr")[1:2]) / par("pin")[1]
     points(0, 0)                       # pivet point
@@ -230,14 +214,13 @@ for (layer in c("top", "middle", "bottom", "pointer")[c(1,4)]) {
         RR <- R$T - par("cex")/20
         ## Position axis name, which is fiddly work
         angle <- 138
-        ##circularText(R=RR, theta0=angle, text="T\\!emp\\!e\\!r\\!a\\!t\\!u\\!r\\!e\\:\\:[ ]", cex=cexName, col=col$T)
         circularText(R=RR, theta0=angle, text="Te\\rmper\\ra\\ut\\d\\r\\rur\\re \\u\\u\\u\\u[\\d\\d\\d\\d    \\u\\u\\u\\u]\\d\\d\\d", cex=cexName, col=col$T)
         tmp <- 26
         text(RR*cos((angle-tmp)*pi/180), RR*sin((angle-tmp)*pi/180), expression(degree*"C"), cex=cexName, srt=26, col=col$T)
-        circularAxis2(T, c(2,1,0.5), fun=Tfunc, inside=TRUE, R=R$T, col=col$T, debug=debug)
+        circularAxis2(T, c(2,1,0.2), func=Tfunc, inside=TRUE, R=R$T, col=col$T, lwd=lwd$axis, debug=debug)
         ## sound-speed axis
         ss <- seq(ss0, ssmax, length.out=vectorLength)
-        circularAxis2(ss, c(10,5,1), inside=TRUE, R=R$ss, col=col$ss, debug=debug)
+        circularAxis2(ss, c(10,5,1), inside=TRUE, R=R$ss, col=col$ss, lwd=lwd$axis, debug=debug)
         RR <- R$ss - par("cex")/20
         circularText(R=RR, theta0=155, text="Soun\\u\\ud\\d\\d Spee\\u\\ud\\d\\d \\u\\u\\u[\\d\\d\\d m/\\rs\\r\\u\\u\\u]", cex=cexName, col=col$ss)
         y0 <- 0.25
@@ -258,7 +241,7 @@ for (layer in c("top", "middle", "bottom", "pointer")[c(1,4)]) {
         y <- y - dy
         text(0, y, "and then read sound speed at pointer.", cex=cexText)
         y <- y - dy
-        text(0, y, sprintf("Example: %.1fm/s at T=%.0f p=%.0f S=%.0f", swSoundSpeed(S0,0,p0),0,p0,S0), cex=cexText)
+        text(0, y, sprintf("Example: %.1fm/s at T=%.0f p=%.0f S=%.0f", swSoundSpeed(30,10,200),10,200,30), cex=cexText)
         y <- -0.15
         y <- y - dy
         text(0, y, sprintf("RMS error: %.1f m/s (%.2f%%)",
@@ -274,81 +257,32 @@ for (layer in c("top", "middle", "bottom", "pointer")[c(1,4)]) {
         text(0, y, "Model 1, S/N 1 (for EC)", cex=cexText)
         y <- y - dy
         text(0, y, "(c) 2020 Dan Kelley", cex=cexText)
-
-
-        cutCircle(R$T+0.01)
-
-        ##Cross-terms omar <- par("mar")
-        ##Cross-terms par(new=TRUE)
-        ##Cross-terms par(mai=c(2.2,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
-        ##Cross-terms range <- range((G$S - Smid)*(G$T - Tmid))
-        ##Cross-terms x <- seq(range[1], range[2], length.out=n)
-        ##Cross-terms plot(x, C["SSTT"]*x, lwd=1.4, xaxs="i", ylim=c(-0.1, 0.1),
-        ##Cross-terms      xlab=paste("(S-", Smid, ")*(T-", Tmid, ")", sep=""), ylab=expression(kg/m^3), type="l")
-        ##Cross-terms mtext("0.00", side=2, at=0, line=0.3, cex=0.9, col=col$sigmaTheta)
-        ##Cross-terms grid(lty=1, col="lightgray")
-        ##Cross-terms rug(side=2, x=seq(-0.1,0.1,by=0.01), ticksize=-0.02, col=col$sigmaTheta)
-        ##Cross-terms legend("topright", legend=expression("Add to "*sigma[theta]), bg="white")
-        ##Cross-terms lines(x, C["SSTT"]*x, lwd=1.4)
-        ##Cross-terms stop() 
+        cutCircle(R$T + cutSpace[1])
     } else if (layer == "middle") {
-        pBig <- seq(p0, pmax, by=1)
-        pMiddle <- seq(p0, pmax, by=0.5)
-        ppmall <- seq(p0, pmax, by=0.1)
-        circularAxis(ppmall, pMiddle, pBig, func=pfunc, inside=TRUE, R=R$p, col=col$p, debug=debug)
-        circularText(R=R$p-0.02, theta0=82, text="Pressure", cex=cexName, col=col$p)
+        ## pressure axis
+        p <- seq(p0, pmax, length.out=vectorLength)
+        circularAxis2(p, c(500, 100, 50), func=pfunc, inside=TRUE, R=R$p, col=col$p, lwd=lwd$axis, debug=debug)
+        RR <- R$p - par("cex")/20
+        circularText(RR, theta0=-5, text="P\\lressur\\re \\u\\u\\u\\u[\\d\\d\\d\\d \\!\\!\\!\\!\\udb\\dar\\:\\:\\u\\u\\u\\u]", cex=cexName, col=col$p)
+        cutCircle(R$p + cutSpace[1])
     } else if (layer == "bottom") {
-        ##
-        ## sound-speed a axis
-        ssBig <- seq(ss0, ssmax, by=1)
-        ssMiddle <- seq(sigthe0, sigthemax, by=5)
-        ssSmall <- seq(sigthe0, sigthemax, by=1)
-        circularAxis(ssSmall, ssMiddle, ssBig, inside=TRUE, R=R$ss, col=col$sigmaTheta, debug=debug)
-        text(0.000, R$sigthe-0.070, expression(sigma[theta]), cex=1.2*cexName, srt=-4, col=col$sigmaTheta)
-        text(0.040, R$sigthe-0.068, expression(" ["), cex=cexName, srt=-5, col=col$sigmaTheta)
-        text(0.080, R$sigthe-0.073, "kg", cex=cexName, srt=-10, col=col$sigmaTheta)
-        text(0.118, R$sigthe-0.076, "/", cex=cexName, srt=-14, col=col$sigmaTheta)
-        text(0.153, R$sigthe-0.077, expression(" "*m^3), cex=cexName, srt=-17, col=col$sigmaTheta)
-        text(0.190, R$sigthe-0.100, "]", cex=cexName, srt=-20, col=col$sigmaTheta)
-        y0 <- 0.25
-        dy <- 0.08
-        x <- sigthe0 - 0.1
-        cexText <- 0.95
-        y <- 0.45
-        dy <- 0.05
-        y <- y - dy
-        EGS <- 32
-        EGT <- 5
-        EGp <- 0
-        EGsigma <- sprintf("%.2f", round(swSigmaTheta(EGS, EGT, EGp), 3))
-        text(-0.375, y, bquote("Example: "*sigma[theta]*"="*.(EGsigma)*kg/m^3*" at S="*.(EGS)*" and T="*.(EGT)*degree*"C."), pos=4, cex=cexText)
-        y <- y - dy
-        ERRrms <- round(RMS(residuals(m)), 2)
-        ERRmax <- round(max(residuals(m)), 2)
-        text(-0.545, y, bquote("Accurate to "*.(ERRrms)*kg/m^3*" (rms) and "*.(ERRmax)*kg/m^3*" (max) up to 500 dbar."), pos=4, cex=cexText)
-        y <- y - dy
-        cutcircle(R=R$S+0.01)
-        omar <- par("mar")
-        par(new=TRUE)
-        par(mai=c(2.2,2.8,3.8,2.8), cex=0.9, tcl=-0.25, mgp=c(1.3, 0.3, 0))
-        range <- range((G$S - Smid)*(G$T - Tmid))
-        x <- seq(range[1], range[2], length.out=n)
-        plot(x, C["SSTT"]*x, lwd=1.4, xaxs="i", ylim=c(-0.1, 0.1),
-             xlab=paste("(S-", Smid, ")*(T-", Tmid, ")", sep=""), ylab=expression(kg/m^3), type="l")
-        mtext("0.00", side=2, at=0, line=0.3, cex=0.9, col=col$sigmaTheta)
-        grid(lty=1, col="lightgray")
-        rug(side=2, x=seq(-0.1,0.1,by=0.01), ticksize=-0.02, col=col$sigmaTheta)
-        legend("topright", legend=expression("Add to "*sigma[theta]), bg="white")
-        lines(x, C["SSTT"]*x, lwd=1.4)
+        ## salinity axis
+        S <- seq(S0, Smax, length.out=vectorLength)
+        RR <- R$S - par("cex")/20
+        circularAxis2(S, c(5, 1, 0.5), func=Sfunc, inside=TRUE, R=R$S, col=col$S, lwd=lwd$axis, debug=debug)
+        circularText(RR, theta0=190, text="\\uS\\da\\ul\\l\\d\\r\\ri\\r\\dn\\ui\\rt\\ry", cex=cexName, col=col$S)
+        cutCircle(R$S + cutSpace[2])
     } else if (layer == "pointer") {
         pointerWidth <- 0.1
-        lines(rep(pointerWidth, 2), c(0, R$pointer+0.15-pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
-        lines(rep(-pointerWidth, 2), c(0, R$pointer+0.15-pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep( pointerWidth, 2), c(0, R$S + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep(-pointerWidth, 2), c(0, R$S + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
         theta <-seq(-pi, 0, length.out=128)
         pointerRadius <- pointerWidth
-        lines(pointerRadius*cos(theta), pointerRadius*sin(theta), col=col$cut, lty=lty$cut, lwd=lwd$cut)
-        lines(pointerRadius*cos(-theta), R$pointer+0.15-pointerWidth+pointerRadius*sin(-theta), col=col$cut, lty=lty$cut, lwd=lwd$cut)
-        lines(rep(0, 2), c(0, R$pointer+0.15))
+        lines(pointerRadius*cos(theta), pointerRadius*sin(theta),
+              col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(pointerRadius*cos(-theta), R$S - cutSpace[3] - 0.25*pointerRadius + pointerRadius*sin(-theta),
+              col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep(0, 2), c(0, R$S))
     } else {
         stop("unrecognized 'layer' (programming error)")
     }
