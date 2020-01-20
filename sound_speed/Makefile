@@ -1,4 +1,5 @@
-all:01_model_selection.out README.pdf
+all:01_model_selection.out README.pdf sound_speed_circular_1.out
+
 %.out: %.R
 	Rscript $< &> $@
 %.pdf: %.Rmd

@@ -54,41 +54,50 @@ C <- coef(model)
 
 # Slide-rule layout for 'best' model
 
-*Salinity*: range from $S_0=`r S0`$ to $S_{max}=`r Smax`$, with distance ($x$)
-function
-
-\begin{equation}
-x = `r C[1]` + `r C["S"]`S
-\end{equation}
-
 *Temperature*: range from $T_0=`r T0`^\circ$C to $T_{max}=`r Tmax`^\circ$C,
-with distance function
+with velocity function
 
 \begin{equation}
-x = `r C["T"]`(T-T_0) + `r C["T2"]`(T-T_0)^2 + `r C["T3"]`(T-T_0)^3
+c = `r C[["(Intercept)"]]` + `r C["T"]`(T-T_0) + `r C["T2"]`(T-T_0)^2 + `r C["T3"]`(T-T_0)^3
 \end{equation}
 
-*Pressure*: range from $p_0=`r p0`$dbar to $p_{max}=`r pmax`$dbar,
-with distance function
+*Pressure*: range from $p_0=`r p0`$dbar to $p_{max}=`r pmax`$dbar, with
+additional distance function
 
 \begin{equation}
-x = `r C["p"]`p + `r C["p2"]`p^2
+c = `r C["p"]`p + `r C["p2"]`p^2
 \end{equation}
+
+*Salinity*: range from $S_0=`r S0`$ to $S_{max}=`r Smax`$, with additional
+distance function
+
+\begin{equation}
+c = `r C["S"]`(S-S_0)
+\end{equation}
+
 
 The functions are illustrated below.
 
-```{r echo=FALSE, fig.width=7, fig.height=10, dev.args=list(pointsize=12)}
-par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(3,1))
-SS <- seq(S0, Smax, length.out=200)
-plot(SS, C[1] + C[["S"]] * SS,
-     xlab="Salinity", ylab="Sound Speed [m/s]", type="l", xaxs="i")
-grid()
+```{r echo=FALSE, fig.width=5, fig.height=10, dev.args=list(pointsize=14)}
+par(mar=c(3,3,2,1), mgp=c(2,0.7,0), mfrow=c(3,1))
 TT <- seq(T0, Tmax, length.out=200)
-plot(TT, C[["T"]] * (TT-T0) + C[["T2"]] * (TT-T0)^2 + C[["T3"]] * (TT-T0)^3,
+plot(TT, C[["(Intercept)"]] + C[["T"]] * (TT-T0) + C[["T2"]] * (TT-T0)^2 + C[["T3"]] * (TT-T0)^3,
      xlab="Temperature [degC]", ylab="Add to Sound Speed [m/s]", type="l", xaxs="i")
 grid()
+mtext(paste("Sound speed at p=", p0, " and S=", S0, sep=""), cex=0.8)
+mtext('(A)', adj=1)
+
 pp <- seq(p0, pmax, length.out=200)
 plot(pp, C[["p"]] * pp + C[["p2"]] * pp^2,
      xlab="Pressure [dbar]", ylab="Add to Sound Speed [m/s]", type="l", xaxs="i")
 grid()
+mtext('Add this to sound speed from panel A', cex=0.8)
+mtext('(B)', adj=1)
+
+SS <- seq(S0, Smax, length.out=200)
+plot(SS, C[["S"]] * (SS-S0),
+     xlab="Salinity", ylab="Sound Speed [m/s]", type="l", xaxs="i")
+grid()
+mtext('Add this to sound speed from panel B', cex=0.8)
+mtext('(C)', adj=1)
 ```

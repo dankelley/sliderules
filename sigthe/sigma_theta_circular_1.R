@@ -51,6 +51,7 @@ circularText <- function(R, theta0, dtheta, text, ...) # angles in deg
         } else {
             thetaRadians <- pi / 180 * theta
             message("i=", i, ", letter='", letters[i], "'")
+            ##text(R * cos(thetaRadians), R * sin(thetaRadians), letters[i], srt=theta-90, pos=1, ...)
             text(R * cos(thetaRadians), R * sin(thetaRadians), letters[i], srt=theta-90, pos=1, ...)
             theta <- theta + dtheta
         }
