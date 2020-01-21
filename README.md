@@ -14,7 +14,7 @@ explanation is in order. It’s simple. The basic idea is to use sliding
 rulers to combine functions in an additive way.
 
 ![Definition sketch of a sliderule set up to add 2 and 3; the answer is
-under the 3 on the upper ruler.](fig)
+under the 3 on the upper ruler.](fig.png)
 
 Consider the diagram above, which sketches two rulers made of
 rectangular pieces of wood. The orang ruler has a linear scale on the
