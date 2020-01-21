@@ -3,7 +3,7 @@
 This repository is for the development of oceanographic slide rules,
 akin to the general slide rules that were popular until handheld
 calculators became common. Although direct computation with software
-offers more accurate results, these sliderules have a didactic
+offers more accurate results, these slide rules have a didactic
 advantage, in the sense that they can yield enhanced intuition regarding
 the essence of the underlying formulae.
 
@@ -13,7 +13,7 @@ For those who have not used a conventional side rule, a little bit of
 explanation is in order. It’s simple. The basic idea is to use sliding
 rulers to combine functions in an additive way.
 
-![Definition sketch of a sliderule set up to add 2 and 3; the answer is
+![Definition sketch of a slide rule set up to add 2 and 3; the answer is
 under the 3 on the upper ruler.](fig.png)
 
 Consider the diagram above, which sketches two rulers made of
