@@ -15,16 +15,21 @@ enhanced intuition regarding the essence of the underlying formulae.
 
 For those who have not used a conventional side rule, a little bit of
 explanation is in order.  It's simple. The basic idea is to use sliding rulers
-to combine functions in an additive way. Consider two rulers made of
-rectangular pieces of wood.  Ruler A has a linear scale on the upper edge, and
-ruler B has an identical scale, but on its lower edge. The rulers are placed on
-a table, or held within a container, in such a way that the scales touch.
-Then, adding two numbers is a simple matter of sliding the rulers.  For
-example, the sum of 2 and 3 may be found by placing the 0 of the upper ruler
-alongside 2 on the lower ruler, and then looking over to 3 on the upper ruler,
-which will be immediately above 5 on the lower ruler.  In a slide rule, there
-is a transparent pointer that has a line marked orthogonal to the scales, which
-makes it easy to line up the 3 of the upper scale with the 5 of this example.
+to combine functions in an additive way.
+
+![Definition sketch of a sliderule set up to add 2 and 3; the answer is under the 3 on the upper ruler.](fig)
+
+Consider the diagram above, which sketches two rulers made of
+rectangular pieces of wood.  The orang ruler has a linear scale on the upper
+edge, and blue ruler has an identical scale, but on its lower edge. The rulers
+are placed on a table, or held within a container, in such a way that the
+scales touch.  Then, adding two numbers is a simple matter of sliding the
+rulers.  For example, the sum of 2 and 3 may be found by placing the 0 of the
+upper ruler alongside 2 on the lower ruler, and then looking over to 3 on the
+upper ruler, which will be immediately above 5 on the lower ruler.  In a slide
+rule, there is a transparent pointer that has a line marked orthogonal to the
+scales, which makes it easy to line up the 3 of the upper scale with the 5 of
+this example.
 
 In this example, the rulers are a form of mechanical (analogue) computer for
 addition.  It should be obvious that the system also works for subtraction.

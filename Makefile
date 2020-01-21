@@ -1,4 +1,6 @@
-all: README.md README.pdf
+all: fig.out README.md README.pdf
+%.out: %.R
+	Rscript $< > $@
 %.md: %.Rmd
 	R --no-save -e 'library(rmarkdown); render("'$<'", "md_document")'
 %.pdf: %.Rmd
