@@ -54,15 +54,16 @@ explanation of the analysis in a README file in the directory.
 
 **Progress**
 
-*Done and tested*
+*Slide rules that are done and tested*
 
 -   *σ*<sub>*θ*</sub> from *S*, *T* and *p*: see [sigthe](sigthe)
-
-*Done but not yet tested*
-
 -   sound speed from *S*, *T* and *p*: see [sound\_speed](sound_speed)
 
-*Possible plans*
+*Slide rules that under development*
+
+-   NA
+
+*Ideas for new slide rules*
 
 -   distance from delta-lon and delta-lat
 -   buoy knockdown from radius and water speed
