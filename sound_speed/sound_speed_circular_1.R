@@ -1,4 +1,7 @@
 ## Instructions for construction and use are printed on the output PDFs.
+args <- commandArgs(trailingOnly=TRUE)
+mockup <- length(args) > 0 && args[1] == "mockup"
+needSetup <- TRUE
 library(oce)
 library(grid)
 RMS <- function(x) sqrt(mean(x^2, na.rm=TRUE))
@@ -8,7 +11,7 @@ load("01_model_selection.rda")
 errorRMS <- RMS(residuals(model) / predict(model))
 errorWorst <- max(residuals(model) / predict(model))
 C <- coef(model)
-R <- list(ss=0.65, T=0.8, p=0.9, S=0.91, pointer=0.91) # radii of axis circles
+R <- list(ss=0.60, T=0.61, p=0.74, S=0.90, pointer=0.92) # radii of axis circles
 R4col <- c("black", "#DF536B", "#61D04F", "#2297E6", "#28E2E5", "#CD0BBC", "#F5C710", "gray62")
 col <- list(ss=R4col[1], T=R4col[2], p=R4col[3], S=R4col[4], cut="gray")
 lty <- list(cut="31")
@@ -117,9 +120,9 @@ circularRug <- function(x, tcl, R, inside=TRUE, col=col, lwd=par("lwd"), debug=d
 }
 
 #' @param theta0 locaiton of min(x), in degrees clockwise of the top of the circle
-circularAxis2 <- function(x, sub, func, tclSmall, tclMiddle, tclBig,
+circularAxis2 <- function(x, sub, func, tclSmall, tclMiddle, tclBig, offset=0,
                           inside=TRUE, R=1, lwd=par("lwd"), col="black",
-                          theta0=0, debug=0)
+                          theta0=0, showAxisLabels=TRUE, debug=0)
 {
     if (missing(sub)) sub <- c(10, 5, 1)
     if (missing(func)) func <- function(x) x
@@ -144,93 +147,102 @@ circularAxis2 <- function(x, sub, func, tclSmall, tclMiddle, tclBig,
     labels <- xBig
     oldxpd <- par("xpd")
     par(xpd=NA)
-    circularRug(scale * func(xSmall), tcl=tclSmall, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
-    circularRug(scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
-    circularRug(scale * func(xBig), tcl=tclBig, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
-    theta <- -pi / 180 * (scale * func(xBig)) # location along circumferenace
+    circularRug(offset + scale * func(xSmall), tcl=tclSmall, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
+    circularRug(offset + scale * func(xMiddle), tcl=tclMiddle, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
+    circularRug(offset + scale * func(xBig), tcl=tclBig, inside=inside, R=R, col=col, lwd=lwd, debug=debug)
+    theta <- -pi / 180 * (offset + scale * func(xBig)) # location along circumferenace
     rr <- R - 1.75 * tclBig
-    for (i in seq_along(theta)) {
-        ##points(rr * cos(theta[i]), rr * sin(theta[i]), col=2,pch=20)
-        text(rr * cos(theta[i]), rr * sin(theta[i]),
-             xBig[i], srt=-90+theta[i]*180/pi, col=col)
-        if (debug) {
-            cat(sprintf("text[%d]='%s' at %.2f deg x=%5.2f y=%5.2f\n", i, xBig[i], theta[i], rr*cos(theta[i]), rr*sin(theta[i])))
+    if (showAxisLabels) {
+        for (i in seq_along(theta)) {
+            text(rr * cos(theta[i]), rr * sin(theta[i]),
+                 xBig[i], srt=-90+theta[i]*180/pi, col=col)
         }
     }
-    message("circularAxis2(): func(xBig) = ", paste(round(func(xBig)), collapse=" "))
-    ##points((R-2.5*tclBig) * cos(theta[1]), (R-2.5*tclBig) * sin(theta[1]),pch=20)
+    ## message("circularAxis2(): func(xBig) = ", paste(round(func(xBig)), collapse=" "))
     circle(R=R, col=col, lwd=lwd, )
     par(xpd=oldxpd)
 }
 
 startPage <- function(layer)
 {
-    if (!interactive())
+    if (!interactive() && !mockup)
         pdf(paste("sound_speed_circular_1_", layer, ".pdf", sep=""), width=7, height=7, pointsize=8)
-    par(mar=rep(0.5, 4))
-    par(mar=rep(1, 4), lwd=1.4)
-    plot(c(-1, 1), c(-1, 1), asp=1, xlab="", ylab="", type="n", axes=debug>0)# , yaxs="i", xaxs="i")
-    box()
-    if (debug)
-        grid(nx=20, ny=20, col="pink")
-    mtext(paste0(" Seawater sound-speed slide rule (", layer, " layer)"), line=0, adj=0, font=2)
-    line <- -1
-    mtext(" Assembly instructions", line=line, adj=0, font=3)
-    if (layer == "pointer") {
-        line <- line - 1
-        mtext(" Cut along the dotted gray oblong shape,", line=line, adj=0)
-        line <- line - 1
-        mtext("   trace the resultant perimeter onto transparent plastic,", line=line, adj=0)
-        line <- line - 1
-        mtext("   cut plastic along the traced outline,", line=line, adj=0)
-        line <- line - 1
-        mtext("   and draw the mid-line with waterproof ink.", line=line, adj=0)
-    } else {
-        line <- line - 1
-        mtext(" Cut just inside the dotted gray circle.", line=line, adj=0)
+    if (!mockup || needSetup) {
+        needSetup <<- FALSE
+        par(mar=rep(0.5, 4))
+        par(mar=rep(1, 4), lwd=1.4)
+        plot(c(-1, 1), c(-1, 1), asp=1, xlab="", ylab="", type="n", axes=debug>0)# , yaxs="i", xaxs="i")
+        box()
+        if (debug)
+            grid(nx=20, ny=20, col="pink")
+        if (mockup) {
+            mtext(" Seawater sound-speed slide rule (mockup)", line=0, adj=0, font=2)
+        } else {
+            mtext(paste0(" Seawater sound-speed slide rule (", layer, " layer)"), line=0, adj=0, font=2)
+            line <- -1
+            mtext(" Assembly instructions", line=line, adj=0, font=3)
+            if (layer == "pointer") {
+                line <- line - 1
+                mtext(" Cut along the dotted gray oblong shape,", line=line, adj=0)
+                line <- line - 1
+                mtext("   trace the resultant perimeter onto transparent plastic,", line=line, adj=0)
+                line <- line - 1
+                mtext("   cut plastic along the traced outline,", line=line, adj=0)
+                line <- line - 1
+                mtext("   and draw the mid-line with waterproof ink.", line=line, adj=0)
+            } else {
+                line <- line - 1
+                mtext(" Cut just inside the dotted gray circle.", line=line, adj=0)
+            }
+            line <- line - 1
+            mtext(" Pierce at the central dot.", line=line, adj=0)
+            line <- line - 1
+            mtext(" Stack layers by size, with pointer at top.", line=line, adj=0)
+            line <- line - 1
+            mtext(" Insert a pivot at the piercing.", line=line, adj=0)
+        }
     }
-    line <- line - 1
-    mtext(" Pierce at the central dot.", line=line, adj=0)
-    line <- line - 1
-    mtext(" Stack layers by size, with pointer at top.", line=line, adj=0)
-    line <- line - 1
-    mtext(" Insert a pivot at the piercing.", line=line, adj=0)
 }
 
 endPage <- function()
 {
-    if (!interactive())
+    if (!interactive() && !mockup)
         dev.off()
 }
 
 ## for (layer in c("top", "middle", "bottom", "pointer")[c(3)]) {
+if (!interactive() && mockup)
+    pdf(paste("sound_speed_circular_1_mockup.pdf", sep=""), width=7, height=7, pointsize=8)
 for (layer in c("top", "middle", "bottom", "pointer")) {
     startPage(layer)
     userPerInch <- diff(par("usr")[1:2]) / par("pin")[1]
     points(0, 0)                       # pivet point
     if (layer == "top") {
-        ## Temperature axis
-        T <- seq(T0, Tmax, length.out=vectorLength)
-        RR <- R$T - par("cex")/20
-        ## Position axis name, which is fiddly work
-        angle <- 138
-        circularText(R=RR, theta0=angle, text="Te\\rmper\\ra\\ut\\d\\r\\rur\\re \\u\\u\\u\\u[\\d\\d\\d\\d    \\u\\u\\u\\u]\\d\\d\\d", cex=cexName, col=col$T)
-        tmp <- 26
-        text(RR*cos((angle-tmp)*pi/180), RR*sin((angle-tmp)*pi/180), expression(degree*"C"), cex=cexName, srt=26, col=col$T)
-        circularAxis2(T, c(2,1,0.2), func=Tfunc, inside=TRUE, R=R$T, col=col$T, lwd=lwd$axis, debug=debug)
+        ##
         ## sound-speed axis
+        angle <- 148
         ss <- seq(ss0, ssmax, length.out=vectorLength)
         circularAxis2(ss, c(10,5,1), inside=TRUE, R=R$ss, col=col$ss, lwd=lwd$axis, debug=debug)
         RR <- R$ss - par("cex")/20
-        circularText(R=RR, theta0=155, text="Soun\\u\\ud\\d\\d Spee\\u\\ud\\d\\d \\u\\u\\u[\\d\\d\\d m/\\rs\\r\\u\\u\\u]", cex=cexName, col=col$ss)
-        y0 <- 0.25
-        dy <- 0.08
-        x <- ss - 0.1
-        cexText <- 0.95
-        y <- 0.5
+        circularText(R=RR, theta0=angle+5, text="Soun\\u\\ud\\d\\d Spee\\u\\ud\\d\\d \\u\\u\\u[\\d\\d\\d\r\rm\\l/\\rs\\u\\u\\u]", cex=cexName, col=col$ss)
+        ##
+        ## Temperature axis
+        T <- seq(T0, Tmax, length.out=vectorLength)
+        angle <- 135
+        circularAxis2(T, c(2,1,0.2), func=Tfunc, inside=FALSE, R=R$T, col=col$T, lwd=lwd$axis, debug=debug)
+        circularAxis2(T, c(2,1,0.2), func=Tfunc, inside=TRUE, R=R$p, col=col$T, lwd=lwd$axis, showAxisLabels=FALSE, debug=debug)
+        RR <- R$ss + 0.08*par("cex")
+        circularText(R=RR, theta0=angle+5, text="Te\\rmper\\ra\\ut\\d\\r\\rur\\re \\u\\u\\u\\u[\\d\\d\\d\\d\\l    \\u\\u\\u\\u]\\d\\d\\d", cex=cexName, col=col$T)
+        tmp <- 24.3
+        RR <- RR + 0.005
+        text(RR*cos((angle-tmp)*pi/180), RR*sin((angle-tmp)*pi/180), expression(degree*"C"), cex=cexName, srt=28, col=col$T)
+        ##
+        ## Text in central zone.
+        cexText <- 0.9
+        y <- 0.45
         dy <- 0.05
         text(0, y, "Seawater", cex=1.4*cexText)
-        y <- y - 1.2 * dy
+        y <- y - 1.3 * dy
         text(0, y, "Sound Speed Calculator", cex=1.4*cexText)
         y <- y - 1.2 * dy
         text(0, y, "Usage: Align p=0dbar with observed T,", cex=cexText)
@@ -239,8 +251,8 @@ for (layer in c("top", "middle", "bottom", "pointer")) {
         y <- y - dy
         text(0, y, "align pointer with observed S,", cex=cexText)
         y <- y - dy
-        text(0, y, "and then read sound speed at pointer.", cex=cexText)
-        y <- y - dy
+        text(0, y, "read sound speed under the pointer.", cex=cexText)
+        y <- y - 1.5 * dy
         text(0, y, sprintf("Example: %.1fm/s at T=%.0f p=%.0f S=%.0f", swSoundSpeed(30,10,200),10,200,30), cex=cexText)
         y <- -0.15
         y <- y - dy
@@ -257,21 +269,22 @@ for (layer in c("top", "middle", "bottom", "pointer")) {
         text(0, y, "Model 1, S/N 1 (for EC)", cex=cexText)
         y <- y - dy
         text(0, y, "(c) 2020 Dan Kelley", cex=cexText)
-        cutCircle(R$T + cutSpace[1])
+        cutCircle(R$p + cutSpace[1])
     } else if (layer == "middle") {
         ## pressure axis
         p <- seq(p0, pmax, length.out=vectorLength)
-        circularAxis2(p, c(500, 100, 50), func=pfunc, inside=TRUE, R=R$p, col=col$p, lwd=lwd$axis, debug=debug)
-        RR <- R$p - par("cex")/20
-        circularText(RR, theta0=-5, text="P\\lressur\\re \\u\\u\\u\\u[\\d\\d\\d\\d \\!\\!\\!\\!\\udb\\dar\\:\\:\\u\\u\\u\\u]", cex=cexName, col=col$p)
-        cutCircle(R$p + cutSpace[1])
+        circularAxis2(p, c(500, 100, 50), func=pfunc, offset=-54, inside=FALSE, R=R$p+2*cutSpace[1], col=col$p, lwd=lwd$axis, debug=debug)
+        circularAxis2(p, c(500, 100, 50), func=pfunc, offset=-54, inside=TRUE, R=R$S-2*cutSpace[1], col=col$p, lwd=lwd$axis, showAxisLabels=FALSE, debug=debug)
+        RR <- R$p
+        circularText(R$p+0.08*par("cex"), theta0=44, text="P\\lressu\\lr\\re \\u\\u\\u\\u[\\d\\d\\d\\d \\!\\!\\!\\!\\udb\\da\\dr\\:\\:\\u\\u\\u\\u]", cex=cexName, col=col$p)
+        cutCircle(R$S - cutSpace[1])
     } else if (layer == "bottom") {
         ## salinity axis
         S <- seq(S0, Smax, length.out=vectorLength)
-        RR <- R$S - par("cex")/20
-        circularAxis2(S, c(5, 1, 0.5), func=Sfunc, inside=TRUE, R=R$S, col=col$S, lwd=lwd$axis, debug=debug)
-        circularText(RR, theta0=190, text="\\uS\\da\\ul\\l\\d\\r\\ri\\r\\dn\\ui\\rt\\ry", cex=cexName, col=col$S)
-        cutCircle(R$S + cutSpace[2])
+        circularAxis2(S, c(5, 1, 0.5), func=Sfunc, inside=FALSE, R=R$S, offset=157.5, col=col$S, lwd=lwd$axis, debug=debug)
+        RR <- R$S + 0.05*par("cex")
+        circularText(RR, theta0=26, text="\\uS\\da\\ul\\l\\d\\r\\ri\\r\\dn\\ui\\rt\\ry", cex=cexName, col=col$S)
+        cutCircle(R$S + 10 * cutSpace[1])
     } else if (layer == "pointer") {
         pointerWidth <- 0.1
         lines(rep( pointerWidth, 2), c(0, R$S + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
@@ -288,4 +301,6 @@ for (layer in c("top", "middle", "bottom", "pointer")) {
     }
     endPage()
 }
+if (!interactive() && mockup)
+    dev.off()
 
