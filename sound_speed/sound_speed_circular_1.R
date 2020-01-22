@@ -165,7 +165,7 @@ circularAxis2 <- function(x, sub, func, tclSmall, tclMiddle, tclBig, offset=0,
 
 startPage <- function(layer)
 {
-    if (!interactive() && !mockup)
+    if (!mockup)
         pdf(paste("sound_speed_circular_1_", layer, ".pdf", sep=""), width=7, height=7, pointsize=8)
     if (!mockup || needSetup) {
         needSetup <<- FALSE
@@ -206,12 +206,12 @@ startPage <- function(layer)
 
 endPage <- function()
 {
-    if (!interactive() && !mockup)
+    if (!mockup)
         dev.off()
 }
 
 ## for (layer in c("top", "middle", "bottom", "pointer")[c(3)]) {
-if (!interactive() && mockup)
+if (mockup)
     pdf(paste("sound_speed_circular_1_mockup.pdf", sep=""), width=7, height=7, pointsize=8)
 for (layer in c("top", "middle", "bottom", "pointer")) {
     startPage(layer)
@@ -302,6 +302,6 @@ for (layer in c("top", "middle", "bottom", "pointer")) {
     }
     endPage()
 }
-if (!interactive() && mockup)
+if (mockup)
     dev.off()
 
