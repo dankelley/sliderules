@@ -11,7 +11,7 @@ load("01_model_selection.rda")
 errorRMS <- RMS(residuals(model) / predict(model))
 errorWorst <- max(residuals(model) / predict(model))
 C <- coef(model)
-R <- list(ss=0.60, T=0.61, p=0.74, S=0.90, pointer=0.92) # radii of axis circles
+R <- list(ss=0.60, T=0.61, p=0.74, S=0.90, pointer=0.95) # radii of axis circles
 R4col <- c("black", "#DF536B", "#61D04F", "#2297E6", "#28E2E5", "#CD0BBC", "#F5C710", "gray62")
 col <- list(ss=R4col[1], T=R4col[2], p=R4col[3], S=R4col[4], cut="gray")
 lty <- list(cut="31")
@@ -287,15 +287,16 @@ for (layer in c("top", "middle", "bottom", "pointer")) {
         cutCircle(R$S + 10 * cutSpace[1])
     } else if (layer == "pointer") {
         pointerWidth <- 0.1
-        lines(rep( pointerWidth, 2), c(0, R$S + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
-        lines(rep(-pointerWidth, 2), c(0, R$S + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep( pointerWidth, 2), c(0, R$pointer + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
+        lines(rep(-pointerWidth, 2), c(0, R$pointer + cutSpace[2] - pointerWidth), col=col$cut, lty=lty$cut, lwd=lwd$cut)
         theta <-seq(-pi, 0, length.out=128)
         pointerRadius <- pointerWidth
         lines(pointerRadius*cos(theta), pointerRadius*sin(theta),
               col=col$cut, lty=lty$cut, lwd=lwd$cut)
-        lines(pointerRadius*cos(-theta), R$S - cutSpace[3] - 0.25*pointerRadius + pointerRadius*sin(-theta),
+        ## Top rounded end
+        lines(pointerRadius*cos(-theta), R$pointer - cutSpace[3] - 0.25*pointerRadius + pointerRadius*sin(-theta),
               col=col$cut, lty=lty$cut, lwd=lwd$cut)
-        lines(rep(0, 2), c(0, R$S))
+        lines(rep(0, 2), c(0, R$pointer))
     } else {
         stop("unrecognized 'layer' (programming error)")
     }
