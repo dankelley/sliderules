@@ -276,14 +276,14 @@ for (layer in c("top", "middle", "bottom", "pointer")) {
         circularAxis2(p, c(500, 100, 50), func=pfunc, offset=-54, inside=FALSE, R=R$p+2*cutSpace[1], col=col$p, lwd=lwd$axis, debug=debug)
         circularAxis2(p, c(500, 100, 50), func=pfunc, offset=-54, inside=TRUE, R=R$S-2*cutSpace[1], col=col$p, lwd=lwd$axis, showAxisLabels=FALSE, debug=debug)
         RR <- R$p
-        circularText(R$p+0.08*par("cex"), theta0=44, text="P\\lressu\\lr\\re \\u\\u\\u\\u[\\d\\d\\d\\d \\!\\!\\!\\!\\udb\\da\\dr\\:\\:\\u\\u\\u\\u]", cex=cexName, col=col$p)
+        circularText(R$p+0.08*par("cex"), theta0=44, text="P\\lressu\\lr\\re \\u\\u\\u\\u[\\d\\d\\d\\d\\r\\u\\udb\\d\\da\\dr\\:\\:\\u\\u\\u\\u]", cex=cexName, col=col$p)
         cutCircle(R$S - cutSpace[1])
     } else if (layer == "bottom") {
         ## salinity axis
         S <- seq(S0, Smax, length.out=vectorLength)
         circularAxis2(S, c(5, 1, 0.5), func=Sfunc, inside=FALSE, R=R$S, offset=157.5, col=col$S, lwd=lwd$axis, debug=debug)
         RR <- R$S + 0.05*par("cex")
-        circularText(RR, theta0=26, text="\\uS\\da\\ul\\l\\d\\r\\ri\\r\\dn\\ui\\rt\\ry", cex=cexName, col=col$S)
+        circularText(RR, theta0=26, text="\\uS\\da\\u\\ll\\l\\d\\ri\\r\\dn\\u\\li\\rt\\r\\d\\dy", cex=cexName, col=col$S)
         cutCircle(R$S + 10 * cutSpace[1])
     } else if (layer == "pointer") {
         pointerWidth <- 0.1
