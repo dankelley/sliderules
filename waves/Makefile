@@ -1,4 +1,4 @@
-all:README.md README.pdf
+all:README.md README.pdf 00_formula.out
 
 %.md: %.Rmd
 	R --no-save -e 'library(rmarkdown); render("'$<'", "md_document")'
@@ -6,7 +6,7 @@ all:README.md README.pdf
 	R --no-save -e 'library(rmarkdown); render("'$<'", "pdf_document")'
 %.out: %.R
 	Rscript $< &> $@
-	Rscript $< mockup > $@
+	##Rscript $< mockup > $@
 clean: force
 	-rm -rf *.out *~ README.pdf
 force:
