@@ -62,7 +62,7 @@ the analysis in a README file in the directory.
 
 *Slide rules that under development*
 
-* NA
+* wave properties given wind speed and fetch
 
 
 *Ideas for new slide rules*
