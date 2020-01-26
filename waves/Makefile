@@ -1,4 +1,4 @@
-all:README.md README.pdf 00_formula.out
+all:README.md README.pdf 00_formula.out 01_model_selection.out
 
 %.md: %.Rmd
 	R --no-save -e 'library(rmarkdown); render("'$<'", "md_document")'

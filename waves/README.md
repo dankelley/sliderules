@@ -1,62 +1,33 @@
-A test case is given as \`\`Example II-2-9’’ in Chapter 2 of the Coastal
-Engineering Manual (2002): with wind speed 30m/s and fetch 50km,
-significant wave height is 4.1m, while the period at the spectral peak
-is 6.7s.
+**NOTE:** looking only at equilibrium fetch-limitd case, so far.
 
-    cat('Example problem II-2-9 of Coastal Engineering Manual\n')
+**Test case**
 
-    ## Example problem II-2-9 of Coastal Engineering Manual
+\`\`Example II-2-9’’ in Chapter 2 of the Coastal Engineering Manual
+(2002): with wind speed 30m/s and fetch 50km, significant wave height is
+4.1m, while the period at the spectral peak is 6.7s.
 
-    library(testthat)
-    library(oce)                           # for gravity
+**Files in this directory**
 
-    ## Loading required package: gsw
+-   `00_formula.R` code patterned on example II-2-9 of CEM. For the test
+    case, this yields as below
 
-    u10 <- 30                              # m/s
-    x <- 50e3                              # m
-    g <- gravity(45)                       # m/s^2 (CEM uss 9.82, appropriate at 60N)
-    t <- 77.23 * x^0.67 / u10^0.34 / g^0.33 # s
-    cat('Wind must blow steadily for >', round(t/3600, 2), 'h for result to hold.\n')
+<!-- -->
 
-    ## Wind must blow steadily for > 4.47 h for result to hold.
+    waveProperties(30, 50e3)
 
-    expect_equal(t/3600, 4.47, tol=0.005)
+    ## $criterion
+    ## [1] 16092.52
+    ## 
+    ## $height
+    ## [1] 4.105621
+    ## 
+    ## $period
+    ## [1] 6.739548
 
-    CD <- 0.001 * (1.1 + 0.035 * u10)
-    ustar <- sqrt(CD) * u10
-    expect_equal(ustar, 1.39, tol=0.005)
-    cat('ustar=', round(ustar, 2), 'm/s\n')
-
-    ## ustar= 1.39 m/s
-
-    # Nondimensional fetch
-    xhat <- g * x / ustar^2
-    expect_equal(xhat, 2.54e5, tol=0.0055)
-
-    # wave height
-    lambda1 <- 0.0413
-    m1 <- 1/2
-    Hhatm0 <- lambda1 * xhat^m1
-    Hhatm0 <- 0.0413*(2.54e5)^(1/2)
-    expect_equal(Hhatm0, 20.8, tol=0.05)
-    Hm0 <- Hhatm0 * ustar^2 / g
-    expect_equal(Hm0, 4.1, tol=0.05)
-    cat('Significant wave height:', round(Hm0, 1), 'm\n')
-
-    ## Significant wave height: 4.1 m
-
-    # Period at spectral peak (note that the CEM seems to have typesetting errors
-    # here, using upper-case Xhat, whereas the preceding text has lower-case xhat,
-    # and putting a hat on lambda2 in one equation but not in he next.
-    lambda2 <- 0.751
-    m2 <- 1/3
-    Thatp <- lambda2 * xhat^m2
-    expect_equal(Thatp, 47.5, tol=0.05)
-    Tp <- Thatp * ustar / g
-    expect_equal(Tp, 6.7, tol=0.05)
-    cat('Spectral peak at:', round(Tp, 1), 's\n')
-
-    ## Spectral peak at: 6.7 s
+-   `01_model_selection.R` code to fit models to the critrion, the
+    height, and the period. The (immeasurably small) misfits are shown
+    in the top-left margins of the three test panels. This also creates
+    `01.rda`, for use later.
 
 **References** 1.
 <a href="https://github.com/dankelley/sliderules/issues/2" class="uri">https://github.com/dankelley/sliderules/issues/2</a>
