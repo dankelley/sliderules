@@ -1,0 +1,167 @@
+---
+title: Oceanographic slide rule for calculating $\rho$ from $S$ and $T$
+author: Dan Kelley
+date: 2019-11-23
+output:
+  pdf_document:
+    fig_caption: yes
+---
+
+```{r echo=FALSE}
+# This contains e.g. S0, Smid, Smax
+load("00.rda")
+```
+
+# Concept
+
+In a linear approximation to the seawater equation of state, assuming constant
+pressure $p$, potential density anomaly $\sigma_\theta$ is given by
+\begin{equation}
+\label{e1}
+\sigma_\theta(S,T) \approx \sigma_\theta(S_0,T_0)\left[1 + \beta(S-S_0)-\alpha(T-T_0)\right]
+\end {equation}
+where $\alpha=-\sigma_\theta^{-1}\partial\sigma_\theta/\partial T$ and
+$\beta=\sigma_\theta^{-1}\partial\sigma_\theta/\partial S$ are constants set up
+to approximate the actual equation of state at the desired target pressure, and
+over a desired range of $S$ and $T$.
+
+Since density in \eqref{e1} is given by the sum of a linear function of $S$
+plus a linear function of $T$, a linear-scale slide-rule could be set up to do
+this calculation.  Extending this to a nonlinear equation of state would involve
+writing
+\begin{equation}
+\label{e2}
+\sigma_\theta = \sigma_{\theta_0} + F(S-S_0) + G(T-T_0)
+\end {equation}
+where $F$ and $G$ are devised to approximate the full equation of state over a
+reasonable application range.
+
+# Apparatus
+
+![Sketch of slide rule.](sigmat_idea.png)
+
+Figure 1 illustrates the idea for a linear slide rule.  There are two sliding
+scales. The lower one has $\sigma_t$ on the bottom side and $S$ on the top
+side.  The upper one has $T$ on the lower side.
+
+
+# Usage
+
+Given $S$ and $T$, density $\rho$ is calculated as follows.
+
+1. Slide the upper scale until the arrow at the left of the $T$ scale lines up
+   with the observed $S$.
+
+2. Slide the transparent overlay until its vertical line is on the $T$ of
+   interest.
+
+3. Determine $\rho$ by tracing this vertical line down to the bottom scale.
+
+The device can also be used in other ways, e.g. infer $T$, given $S$ and
+$\rho$.
+
+# Working notes
+
+```{r echo=FALSE}
+options(digits=4)
+```
+
+## First-order linear model
+
+```{r echo=FALSE}
+load("01.rda")
+C <- coef(m)
+res <- residuals(m)
+```
+
+Linear least-squares regression analysis (see `01.R`) on an `r n` by `r n`
+grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
+\begin{equation}
+\label{e3}
+\sigma_\theta = `r C['(Intercept)']` +`r C['SS']`(S-S_0) - `r -C['TT']`(T-T_0)
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=0$dbar.  The RMS
+misfit of this model is `r round(RMS(res),3)` kg/m$^3$, and the maximum
+absolute misfit is $`r max(abs(res))`$kg/m$^3$.
+
+## Second-order model
+
+```{r echo=FALSE}
+load("02.rda")
+C <- coef(m)
+res <- residuals(m)
+```
+
+Second-order polynomial least-squares regression analysis (see `02.R`) on an `r n` by `r n`
+grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
+\begin{equation}
+\label{e4}
+\sigma_\theta = `r C['(Intercept)']`+`r C['SS']`(S-S_0)+`r C['SS2']`(S-S_0)^2-`r -C['TT']`(T-T_0)-`r -C['TT2']`(T-T_0)^2
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, at pressure $p=0$dbar.  The RMS
+misfit of this model is `r round(RMS(res),3)` kg/m$^3$, and the maximum
+absolute misfit is $`r max(abs(res))`$kg/m$^3$.
+
+## Second-order model with cross term
+
+```{r echo=FALSE}
+load("03.rda")
+C <- coef(m)
+res <- residuals(m)
+```
+
+
+Second-order polynomial least-squares regression analysis (see `03.R`) on an `r n` by `r n`
+grid covering $`r S0`<S<`r Smax`$ and $`r T0`<T<`r Tmax`$ yields
+\begin{equation}
+\label{e5}
+\begin{split}
+\sigma_\theta =& `r C['(Intercept)']` +`r C['SS']`(S-S_0) + `r C['SS2']`(S-S_0)^2-`r -C['TT']`(T-T_0)-`r -C['TT2']`(T-T_0)^2\\
+&-`r -C['SSTT']`(S-S_*)(T-T_*)
+\end{split}
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, $S_*=`r Smid`$, $T_*=`r Tmid`^\circ$C, at
+pressure $p=0$dbar.  The RMS misfit is `r round(RMS(res),3)` kg/m$^3$,
+and the maximum absolute misfit is $`r max(abs(res))`$kg/m$^3$.
+
+## Second-order model with cross-term and pressure-term
+
+```{r echo=FALSE}
+load("04.rda")
+C <- coef(m)
+res <- residuals(m)
+```
+
+Second-order polynomial regression analysis, including pressure (see `04.R`) on
+an `r n`x`r n`x`r n` grid covering the ranges $`r S0`<S<`r Smax`$, $`r T0`<T<`r Tmax`$
+and $`r p0`<p<`r pmax`$ yields
+\begin{equation}
+\label{e6}
+\begin{split}
+\sigma_\theta =& `r C['(Intercept)']` +`r C['SS']`(S-S_0) + `r C['SS2']`(S-S_0)^2\\
+&-`r -C['TT']`(T-T_0)-`r -C['TT2']`(T-T_0)^2 -`r -C['SSTT']`(S-S_*)(T-T_*)
+\end{split}
+\end{equation}
+with $S_0=`r S0`$, $T_0=`r T0`^\circ$C, $S_*=`r Smid`$, $T_*=`r Tmid`^\circ$C.
+The RMS misfit is `r round(RMS(res),3)` kg/m$^3$, and the maximum absolute
+misfit is $`r max(abs(res))`$kg/m$^3$. (I also tried with a linear pressure
+term but the coefficient was `r 2.068e-5`, which is only `r 500*2.068e-5` at
+500dbar, so I did not judge this correction important enough (for coastal work)
+to justify adding a second correction graph.
+
+# Device consruction
+
+Run `sigma_theta_circular_1.R` non-interactively, which creates files named
+`sigma_theta_circular_1_lower.pdf` and `sigma_theta_circular_1_upper.pdf`.
+Print the files, and laminate in clear plastic to make reasonably rigid sheets.
+Trim each sheet along the dotted gray line, thus forming semi-rigid disks.
+Then create a tansparent radial pointer that can reach from the temperature
+axis to the central point. Draw a straight line olong the centre of the
+pointer, with permanent ink. Puncture the two laminated disks at the central
+point (marked with a small circle) and also puncture the pointer along its
+central line, at a spot that lets the pointer reach to the temperature scale.
+
+The result is a slide rule for calculating $\sigma_\theta$. To test it, follow
+the directions printed on the top layer, and see if you get the indicated test
+value.
+
