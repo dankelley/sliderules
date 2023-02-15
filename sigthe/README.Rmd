@@ -151,15 +151,15 @@ to justify adding a second correction graph.
 
 # Device consruction
 
-Run `sigma_theta_circular_1.R` non-interactively, which creates files named
-`sigma_theta_circular_1_lower.pdf` and `sigma_theta_circular_1_upper.pdf`.
-Print the files, and laminate in clear plastic to make reasonably rigid sheets.
+Run `sigma_theta_circular_1.R` non-interactively to create files 
+`sigma_theta_circular_1_lower.pdf`, `sigma_theta_circular_1_upper.pdf`
+and `sigma_theta_pointer.pdf`.
+Print the files and laminate the first two in clear plastic create reasonably rigid sheets.
 Trim each sheet along the dotted gray line, thus forming semi-rigid disks.
-Then create a tansparent radial pointer that can reach from the temperature
-axis to the central point. Draw a straight line olong the centre of the
-pointer, with permanent ink. Puncture the two laminated disks at the central
-point (marked with a small circle) and also puncture the pointer along its
-central line, at a spot that lets the pointer reach to the temperature scale.
+Then use the third PDF file as a pattern for a transparent radial pointer that can reach from the temperature
+axis to the central point. Draw a straight line along the centre of the
+pointer, with permanent ink. Finally, puncture the two laminated disks at the central
+point (marked with a small circle) and do the same with the transparent pointer, and assemble the pieces using a rivet or something similar.
 
 The result is a slide rule for calculating $\sigma_\theta$. To test it, follow
 the directions printed on the top layer, and see if you get the indicated test
