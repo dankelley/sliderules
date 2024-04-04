@@ -38,6 +38,13 @@ h <- seq(1, 50, length.out=n)
 Cperiod(period[1], h[1])
 z <- outer(period, h, Cperiod)
 #print(range(z, na.rm=TRUE))
+if (!interactive()) {
+    png("00_%d.png",
+        unit = "in",
+        width = 7, height = 7, pointsize = 10, res = 250
+    )
+}
+
 par(mar=c(3.5,3.5,1,1), mgp=c(2,0.7,0))
 contour(period, h, z, labcex=1,
         xlab="Period [s]", ylab="Depth [m]", main=expression(C[P]))
