@@ -1,2 +1,8 @@
-00.out: 00.R
-	R --no-save < 00.R > 00.out
+all: $(patsubst %.R,%.out,$(wildcard *.R))
+%.out: %.R
+	R --no-save < $< &> $@
+clean:
+	-rm *~ *png *.out *pdf
+view:
+	open *.png
+
