@@ -3,6 +3,7 @@
 * 01.R regression
 * 02.R crude first version (unpretty spice axis)
 * 03.R as 02.R but pretty spice axis
+* 04.R rewrite to drop a dimension (and hopefully to see problem)
 
 # Resources
 * https://deadreckonings.com/wp-content/uploads/2010/04/the_lost_art_of_nomography.pdf

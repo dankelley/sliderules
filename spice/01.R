@@ -7,7 +7,8 @@ CTg <- seq(CTlim[1], CTlim[2], length.out = n + 1)
 g <- expand.grid(SA = SAg, CT = CTg)
 g$spiciness0 <- gsw_spiciness0(g$SA, g$CT)
 spiciness0 <- matrix(g$spiciness, nrow = n, byrow = FALSE)
-contour(spiciness0)
+if (!interactive()) png("01_%02d.png", units = "in", width = 7, height = 7, res = 500)
+contour(SAg, CTg, spiciness0)
 summary(m1 <- lm(spiciness0 ~ CT + SA, data = g)) # RSE 0.2673
 summary(m2 <- lm(spiciness0 ~ CT + I(CT^2) + SA, data = g)) # RSE 0.05799
 summary(m3 <- lm(spiciness0 ~ CT + I(CT^2) + I(CT^3) + SA, data = g)) # RSE 0.05427
@@ -16,8 +17,11 @@ par(mfrow = c(2, 2), mar = c(3, 3, 1, 1), mgp = c(2.0, 0.7, 0))
 plot(g$SA, g$spiciness0)
 ylim <- par("usr")[3:4]
 scale <- diff(quantile(g$spiciness, c(0.01, 0.99))) / 2
-plot(g$SA, 100 * (g$spiciness0 - predict(m1)) / scale, ylab = "m1 % err")
-plot(g$SA, 100 * (g$spiciness0 - predict(m2)) / scale, ylab = "m2 % err")
-plot(g$SA, 100 * (g$spiciness0 - predict(m3)) / scale, ylab = "m3 % err")
-cat("Next is best\n")
+plot(g$SA, g$spiciness0 - predict(m1), ylab = "m1 % err")
+plot(g$SA, g$spiciness0 - predict(m2), ylab = "m2 % err")
+plot(g$SA, g$spiciness0 - predict(m3), ylab = "m3 % err")
+cat("Next (m3) is best i.t.o. misfit\n")
 print(coef(m3))
+cat("Next (m2) has slightly higher misfit, but better t values on (fewer) parameters")
+print(coef(m2))
+if (!interactive()) dev.off()
