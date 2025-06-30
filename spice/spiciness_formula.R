@@ -7,8 +7,8 @@ CTg <- seq(CTlim[1], CTlim[2], length.out = n + 1)
 g <- expand.grid(SA = SAg, CT = CTg)
 g$spiciness0 <- gsw_spiciness0(g$SA, g$CT)
 spiciness0 <- matrix(g$spiciness, nrow = n, byrow = FALSE)
-if (!interactive()) png("01_%02d.png", units = "in", width = 7, height = 7, res = 500)
-contour(SAg, CTg, spiciness0)
+if (!interactive()) png("spiciness_formula_%02d.png", units = "in", width = 7, height = 7, res = 500)
+contour(SAg, CTg, spiciness0, xaxs = "i", yaxs = "i")
 summary(m1 <- lm(spiciness0 ~ CT + SA, data = g)) # RSE 0.2673
 summary(m2 <- lm(spiciness0 ~ CT + I(CT^2) + SA, data = g)) # RSE 0.05799
 summary(m3 <- lm(spiciness0 ~ CT + I(CT^2) + I(CT^3) + SA, data = g)) # RSE 0.05427
